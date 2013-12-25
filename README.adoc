@@ -4,7 +4,7 @@
 
 image::https://travis-ci.org/aalmiray/jipsy.png?branch=master["Build Status", link="https://travis-ci.org/aalmiray/jipsy"]
 
-image::https://d2weczhvl823v0.cloudfront.net/aalmiray/griffon2/trend.png["Bitdeli Badge", link="https://bitdeli.com/free"]
+image::https://d2weczhvl823v0.cloudfront.net/aalmiray/jipsy/trend.png["Bitdeli Badge", link="https://bitdeli.com/free"]
 
 Configurable Java Annotation Processor to simplify the use of the Service Provider Interface.
 
