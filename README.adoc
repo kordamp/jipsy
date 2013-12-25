@@ -2,7 +2,7 @@
 :author: Andres Almiray
 :version: 0.1.0
 
-image:https://travis-ci.org/aalmiray/jipsy.png?branch=master["Build Status", link="https://travis-ci.org/aalmiray/jipsy"]
+image::https://travis-ci.org/aalmiray/jipsy.png?branch=master["Build Status", link="https://travis-ci.org/aalmiray/jipsy"]
 
 image::https://d2weczhvl823v0.cloudfront.net/aalmiray/griffon2/trend.png["Bitdeli Badge", link="https://bitdeli.com/free"]
 
@@ -25,6 +25,7 @@ This library provides a mechanism for enforcing those rules by simply adding an 
 example say there exists the following `Calculator` service interface
 
 [source,java]
+[subs="verbatim,attributes"]
 ----
 package com.acme;
 
@@ -36,6 +37,7 @@ public interface Calculator {
 A basic implementation of such service may be as follows
 
 [source,java]
+[subs="verbatim,attributes"]
 ----
 package com.acme;
 
