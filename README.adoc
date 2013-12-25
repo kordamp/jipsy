@@ -1,6 +1,6 @@
 = Jipsy
 :author: Andres Almiray
-:revnumber: 0.1.0-SNAPSHOT
+:revnumber: 0.1.0
 :revremark: Configurable Java Annotation Processor to simplify the use of the Service Provider Interface
 
 image::https://d2weczhvl823v0.cloudfront.net/aalmiray/griffon2/trend.png[Bitdeli Badge, link="https://bitdeli.com/free"]
@@ -63,7 +63,7 @@ Jipsy is package as a standalone jars with no additional dependencies. Jipsy req
 Annotation Processor facility to do its work. You must enable annotation processing on your IDE if you want Jipsy to work
 correctly.
 
-Jipsy can be downloaded directly from Bintray or configure it via Maven or Gradle.
+Jipsy can be downloaded directly from https://bintray.com/aalmiray/kordamp/jipsy[Bintray] or configure it via Maven or Gradle.
 
 .Maven
 [subs="verbatim,attributes"]
