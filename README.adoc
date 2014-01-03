@@ -6,6 +6,8 @@ image::https://travis-ci.org/aalmiray/jipsy.png?branch=master["Build Status", li
 
 image::https://d2weczhvl823v0.cloudfront.net/aalmiray/jipsy/trend.png["Bitdeli Badge", link="https://bitdeli.com/free"]
 
+image::https://api.bintray.com/packages/aalmiray/kordamp/jipsy/images/download.png["Bintray", link="https://bintray.com/aalmiray/kordamp/jipsy/{version}"]
+
 Configurable Java Annotation Processor to simplify the use of the Service Provider Interface.
 
 == Introduction
