@@ -176,11 +176,21 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
         return false;
     }
 
-    @SuppressWarnings("unchecked")
-    protected Collection<AnnotationValue> findValue(AnnotationMirror mirror) {
+    protected AnnotationValue findSingleValueMember(AnnotationMirror mirror, String memberName) {
         Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = mirror.getElementValues();
         for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : elementValues.entrySet()) {
-            if (entry.getKey().getSimpleName().contentEquals("value")) {
+            if (entry.getKey().getSimpleName().contentEquals(memberName)) {
+                return entry.getValue();
+            }
+        }
+        throw new IllegalStateException("No value found in element");
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Collection<AnnotationValue> findCollectionValueMember(AnnotationMirror mirror, String memberName) {
+        Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = mirror.getElementValues();
+        for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : elementValues.entrySet()) {
+            if (entry.getKey().getSimpleName().contentEquals(memberName)) {
                 return (Collection<AnnotationValue>) entry.getValue().getValue();
             }
         }

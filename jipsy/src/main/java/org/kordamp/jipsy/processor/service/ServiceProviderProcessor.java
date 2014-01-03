@@ -144,7 +144,7 @@ public class ServiceProviderProcessor extends AbstractSpiProcessor {
         List<TypeElement> services = new ArrayList<TypeElement>();
 
         for (AnnotationMirror annotation : findAnnotationMirrors(classElement, getAnnotationClass().getName())) {
-            for (AnnotationValue value : findValue(annotation)) {
+            for (AnnotationValue value : findCollectionValueMember(annotation, "value")) {
                 services.add(toElement(value));
             }
         }

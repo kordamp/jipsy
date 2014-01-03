@@ -1,6 +1,6 @@
 = Jipsy
 :author: Andres Almiray
-:version: 0.1.0
+:version: 0.2.0
 
 image::https://travis-ci.org/aalmiray/jipsy.png?branch=master["Build Status", link="https://travis-ci.org/aalmiray/jipsy"]
 
@@ -62,7 +62,7 @@ Et voilà! There are no additional sources to be touched nor files to be created
 
 == Installing
 
-Jipsy is package as a standalone jars with no additional dependencies. Jipsy requires JDK6 as a minimum as it relies on the
+Jipsy is packaged as a standalone jars with no additional dependencies. Jipsy requires JDK6 as a minimum as it relies on the
 Annotation Processor facility to do its work. You must enable annotation processing on your IDE if you want Jipsy to work
 correctly.
 
