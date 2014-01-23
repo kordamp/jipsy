@@ -94,4 +94,22 @@ public final class Service {
     public String toString() {
         return serviceName + "=" + providers;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Service service = (Service) o;
+
+        return serviceName.equals(service.serviceName) &&
+            providers.containsAll(service.providers) && service.providers.containsAll(providers);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = serviceName.hashCode();
+        result = 31 * result + providers.hashCode();
+        return result;
+    }
 }

@@ -75,19 +75,31 @@ public class ServiceProviderProcessor extends AbstractSpiProcessor {
         for (String serviceName : persistence.tryFind()) {
             data.getService(serviceName);
         }
+        data.cache();
     }
 
     @Override
     protected void writeData() {
-        logger.note(LogLocation.LOG_FILE, "Writing output");
-        for (Service service : data.services()) {
-            try {
-                persistence.write(service.getName(), service.toProviderNamesList());
-            } catch (IOException e) {
-                processingEnv.getMessager().printMessage(Kind.ERROR, e.getMessage());
+        if (data.isModified()) {
+            if (data.services().isEmpty()) {
+                logger.note(LogLocation.LOG_FILE, "Writing output");
+                try {
+                    persistence.delete();
+                } catch (IOException e) {
+                    logger.warning(LogLocation.LOG_FILE, "An error occurred while deleting data file");
+                }
+            } else {
+                logger.note(LogLocation.LOG_FILE, "Writing output");
+                for (Service service : data.services()) {
+                    try {
+                        persistence.write(service.getName(), service.toProviderNamesList());
+                    } catch (IOException e) {
+                        processingEnv.getMessager().printMessage(Kind.ERROR, e.getMessage());
+                    }
+                }
+                persistence.writeLog();
             }
         }
-        persistence.writeLog();
     }
 
     @Override
@@ -102,6 +114,10 @@ public class ServiceProviderProcessor extends AbstractSpiProcessor {
 
     @Override
     protected void handleElement(Element e) {
+        if (!(e instanceof TypeElement)) {
+            return;
+        }
+
         TypeElement currentClass = (TypeElement) e;
 
         CheckResult checkResult = checkCurrentClass(currentClass);

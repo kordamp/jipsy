@@ -32,4 +32,6 @@ public interface Persistence {
     Collection<String> tryFind();
 
     Collection<String> listDiscoveredFiles(File[] list);
+
+    void delete() throws IOException ;
 }

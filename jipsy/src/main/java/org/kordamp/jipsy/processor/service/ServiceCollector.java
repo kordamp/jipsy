@@ -26,6 +26,7 @@ import java.util.*;
 
 public final class ServiceCollector {
     private final Map<String, Service> services = new HashMap<String, Service>();
+    private final Map<String, Service> cached = new HashMap<String, Service>();
 
     private final List<String> removed = new ArrayList<String>();
     private final Initializer initializer;
@@ -34,6 +35,27 @@ public final class ServiceCollector {
     public ServiceCollector(Initializer initializer, Logger logger) {
         this.initializer = initializer;
         this.logger = logger;
+    }
+
+    public void cache() {
+        this.cached.putAll(services);
+    }
+
+    public boolean isModified() {
+        if (cached.size() != services.size()) {
+            return true;
+        }
+
+        for (Map.Entry<String, Service> e : cached.entrySet()) {
+            if (!services.containsKey(e.getKey())) {
+                return true;
+            }
+            if (!e.getValue().equals(services.get(e.getKey()))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public Service getService(String service) {

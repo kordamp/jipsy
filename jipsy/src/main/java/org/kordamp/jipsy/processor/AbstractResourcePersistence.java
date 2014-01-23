@@ -72,6 +72,11 @@ public abstract class AbstractResourcePersistence extends AbstractPersistence {
         return new File(uri.toString()).getParentFile();
     }
 
+    @Override
+    public void delete() throws IOException {
+        filer.getResource(StandardLocation.CLASS_OUTPUT, "", path + name).delete();
+    }
+
     protected FileObject getResourceFile(String name) throws IOException {
         return filer.getResource(StandardLocation.CLASS_OUTPUT, "", path + name);
     }

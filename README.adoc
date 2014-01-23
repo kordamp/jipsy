@@ -1,6 +1,6 @@
 = Jipsy
 :author: Andres Almiray
-:version: 0.2.0
+:version: 0.3.0
 
 image::https://travis-ci.org/aalmiray/jipsy.png?branch=master["Build Status", link="https://travis-ci.org/aalmiray/jipsy"]
 
