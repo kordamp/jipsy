@@ -128,24 +128,28 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
         processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, element.getSimpleName() + " " + result.getMessage(), element);
     }
 
-    protected boolean hasCorrectConstructor(TypeElement currentClass) {
+    protected boolean hasPublicNoArgsConstructor(TypeElement currentClass) {
         List<ExecutableElement> constructors = ElementFilter.constructorsIn(currentClass.getEnclosedElements());
         for (ExecutableElement constructor : constructors) {
-            if (constructor.getModifiers().contains(Modifier.PUBLIC) && constructor.getParameters().isEmpty()) {
+            if (hasModifier(constructor, Modifier.PUBLIC) && constructor.getParameters().isEmpty()) {
                 return true;
             }
         }
         return false;
     }
 
+    protected boolean hasModifier(Element element, Modifier modifier) {
+        return element.getModifiers().contains(modifier);
+    }
+
     protected boolean isStaticClass(TypeElement element) {
         return element.getEnclosingElement().getKind() != ElementKind.CLASS ||
-            element.getModifiers().contains(Modifier.STATIC);
+            hasModifier(element, Modifier.STATIC);
     }
 
     protected boolean isAbstractClass(TypeElement element) {
         return element.getEnclosingElement().getKind() == ElementKind.CLASS &&
-            element.getModifiers().contains(Modifier.ABSTRACT);
+            hasModifier(element, Modifier.ABSTRACT);
     }
 
     protected CheckResult isImplementation(TypeElement currentClass, TypeElement type) {
@@ -200,7 +204,6 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
     protected String createProperQualifiedName(TypeElement type) {
         return processingEnv.getElementUtils().getBinaryName(type).toString();
     }
-
 
     protected static List<AnnotationMirror> findAnnotationMirrors(TypeElement element, String lookingFor) {
         List<AnnotationMirror> annotationMirrors = new ArrayList<AnnotationMirror>();

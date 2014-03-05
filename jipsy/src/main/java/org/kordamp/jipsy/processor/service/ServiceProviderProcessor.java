@@ -141,7 +141,7 @@ public class ServiceProviderProcessor extends AbstractSpiProcessor {
             return CheckResult.valueOf("is not a class");
         }
 
-        if (!currentClass.getModifiers().contains(Modifier.PUBLIC)) {
+        if (!hasModifier(currentClass, Modifier.PUBLIC)) {
             return CheckResult.valueOf("is not a public class");
         }
 
@@ -149,7 +149,7 @@ public class ServiceProviderProcessor extends AbstractSpiProcessor {
             return CheckResult.valueOf("is not a static class");
         }
 
-        if (!hasCorrectConstructor(currentClass)) {
+        if (!hasPublicNoArgsConstructor(currentClass)) {
             return CheckResult.valueOf("has no public no-args constructor");
         }
 

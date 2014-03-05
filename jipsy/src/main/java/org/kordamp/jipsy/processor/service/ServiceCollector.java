@@ -25,8 +25,8 @@ import org.kordamp.jipsy.processor.Logger;
 import java.util.*;
 
 public final class ServiceCollector {
-    private final Map<String, Service> services = new HashMap<String, Service>();
-    private final Map<String, Service> cached = new HashMap<String, Service>();
+    private final Map<String, Service> services = new LinkedHashMap<String, Service>();
+    private final Map<String, Service> cached = new LinkedHashMap<String, Service>();
 
     private final List<String> removed = new ArrayList<String>();
     private final Initializer initializer;
