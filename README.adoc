@@ -1,6 +1,7 @@
-= Jipsy
 :author: Andres Almiray
 :version: 0.4.0
+
+image::media/jipsy-logo.png[]
 
 image:https://travis-ci.org/aalmiray/jipsy.png?branch=master["Build Status", link="https://travis-ci.org/aalmiray/jipsy"]
 image:http://img.shields.io/:semver-{version}-blue.svg["Semantic Versioning", link="http://semver.org"]
@@ -112,4 +113,3 @@ Bart Enkelaar; copyrighted by TOPdesk; source distributed under Apache Software 
 
 TBD
 
-image::https://d2weczhvl823v0.cloudfront.net/aalmiray/jipsy/trend.png["Bitdeli Badge", link="https://bitdeli.com/free"]
