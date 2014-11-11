@@ -1,6 +1,6 @@
 = Jipsy
 :author: Andres Almiray
-:version: 0.4.0
+:version: 0.4.1
 :project-name: jipsy
 
 image::media/jipsy-logo.png[]

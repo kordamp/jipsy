@@ -5,7 +5,7 @@
     <groupId>org.kordamp.jipsy</groupId>
     <artifactId>jipsy-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.4.0</version>
+    <version>0.4.1</version>
     <name>jipsy-parent</name>
     <url>http://github.com/aalmiray/jipsy</url>
     <description>Configurable Java Annotation Processor to simplify the use of
@@ -28,8 +28,8 @@
             <id>aalmiray</id>
             <name>Andres Almiray</name>
             <email>aalmiray@yahoo.com</email>
-            <url>http://github.com/aalmiray</url>
             <organization>Kordamp</organization>
+            <organizationUrl>http://github.com/aalmiray</organizationUrl>
             <roles>
                 <role>founder</role>
                 <role>developer</role>
@@ -44,6 +44,12 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:aalmiray/jipsy.git</connection>
+        <developerConnection>scm:git:git@github.com:aalmiray/jipsy.git</developerConnection>
+        <url>git@github.com:aalmiray/jipsy.git</url>
+    </scm>
 
     <build>
         <pluginManagement>
