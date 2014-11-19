@@ -6,7 +6,7 @@
     <artifactId>jipsy-parent</artifactId>
     <packaging>pom</packaging>
     <version>0.4.1</version>
-    <name>jipsy-parent</name>
+    <name>${project.groupId}:${project.artifactId}</name>
     <url>http://github.com/aalmiray/jipsy</url>
     <description>Configurable Java Annotation Processor to simplify the use of
         the Service Provider Interface
@@ -16,6 +16,10 @@
         <name>Kordamp</name>
     </organization>
     <inceptionYear>2013</inceptionYear>
+
+    <prerequisites>
+        <maven>3.0.0</maven>
+    </prerequisites>
 
     <modules>
         <module>jipsy</module>
@@ -49,40 +53,30 @@
         <connection>scm:git:git@github.com:aalmiray/jipsy.git</connection>
         <developerConnection>scm:git:git@github.com:aalmiray/jipsy.git</developerConnection>
         <url>git@github.com:aalmiray/jipsy.git</url>
+        <tag>HEAD</tag>
     </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray</id>
+            <url>https://api.bintray.com/maven/aalmiray/kordamp/jipsy</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>2.2.1</version>
-                    <executions>
-                        <execution>
-                            <phase>install</phase>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9.1</version>
-                    <executions>
-                        <execution>
-                            <phase>install</phase>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.1</version>
+                    <inherited>true</inherited>
                 </plugin>
                 <!-- Add default manifest information -->
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.5</version>
+                    <inherited>true</inherited>
                     <configuration>
                         <archive>
                             <manifestEntries>
@@ -108,20 +102,67 @@
                         </execution>
                     </executions>
                 </plugin>
-
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <inherited>true</inherited>
                     <configuration>
                         <!-- This is to prevent javac from looking for the actual processor -->
                         <compilerArgument>-proc:none</compilerArgument>
-                        <compilerVersion>1.6</compilerVersion>
+                        <compilerVersion>3.1</compilerVersion>
                         <source>1.6</source>
                         <target>1.6</target>
                         <encoding>utf-8</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.4.1</version>
+                    <configuration>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <releaseProfiles>release</releaseProfiles>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
                     </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
 
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <inherited>true</inherited>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <inherited>true</inherited>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

@@ -12,7 +12,6 @@
 
     <artifactId>jipsy-test-support</artifactId>
     <packaging>jar</packaging>
-    <name>jipsy-test-support</name>
 
     <dependencies>
         <dependency>

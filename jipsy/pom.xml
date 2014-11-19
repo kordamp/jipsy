@@ -12,6 +12,5 @@
 
     <artifactId>jipsy</artifactId>
     <packaging>jar</packaging>
-    <name>jipsy</name>
 
 </project>
