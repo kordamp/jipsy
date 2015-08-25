@@ -1,11 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kordamp.jipsy</groupId>
     <artifactId>jipsy-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.4.1</version>
+    <version>0.4.0</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>http://github.com/aalmiray/jipsy</url>
     <description>Configurable Java Annotation Processor to simplify the use of
@@ -124,45 +122,50 @@
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                     </configuration>
                 </plugin>
+                 <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-gpg-plugin</artifactId>
+                     <version>1.5</version>
+                     <executions>
+                         <execution>
+                             <id>sign-artifacts</id>
+                             <phase>verify</phase>
+                             <goals>
+                                 <goal>sign</goal>
+                             </goals>
+                         </execution>
+                     </executions>
+                 </plugin>
+                 <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-source-plugin</artifactId>
+                     <version>2.2.1</version>
+                     <inherited>true</inherited>
+                     <executions>
+                         <execution>
+                             <phase>install</phase>
+                             <goals>
+                                 <goal>jar</goal>
+                             </goals>
+                         </execution>
+                     </executions>
+                 </plugin>
+                 <plugin>
+                     <groupId>org.apache.maven.plugins</groupId>
+                     <artifactId>maven-javadoc-plugin</artifactId>
+                     <version>2.9.1</version>
+                     <inherited>true</inherited>
+                     <executions>
+                         <execution>
+                             <phase>install</phase>
+                             <goals>
+                                 <goal>jar</goal>
+                             </goals>
+                         </execution>
+                     </executions>
+                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
 
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>2.2.1</version>
-                        <inherited>true</inherited>
-                        <executions>
-                            <execution>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.9.1</version>
-                        <inherited>true</inherited>
-                        <executions>
-                            <execution>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
