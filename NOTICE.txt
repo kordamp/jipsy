@@ -1,6 +1,0 @@
-Includes code copyrighted by TOPdesk, licensed with Apache Software License 2.0
-Original source located at https://code.google.com/p/spi
-Original developers of the org.mangosdk.spi package:
-
-  - Roel Spilker
-  - Bart Enkelaar
