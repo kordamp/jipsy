@@ -1,23 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kordamp.jipsy</groupId>
     <artifactId>jipsy-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.4.0</version>
+    <version>0.4.1</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>http://github.com/aalmiray/jipsy</url>
     <description>Configurable Java Annotation Processor to simplify the use of
         the Service Provider Interface
     </description>
-
-    <organization>
-        <name>Kordamp</name>
-    </organization>
     <inceptionYear>2013</inceptionYear>
-
-    <prerequisites>
-        <maven>3.0.0</maven>
-    </prerequisites>
 
     <modules>
         <module>jipsy</module>
@@ -29,14 +22,6 @@
         <developer>
             <id>aalmiray</id>
             <name>Andres Almiray</name>
-            <email>aalmiray@yahoo.com</email>
-            <organization>Kordamp</organization>
-            <organizationUrl>http://github.com/aalmiray</organizationUrl>
-            <roles>
-                <role>founder</role>
-                <role>developer</role>
-            </roles>
-            <timezone>+1</timezone>
         </developer>
     </developers>
 
@@ -44,22 +29,13 @@
         <license>
             <name>Apache License Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
         </license>
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:aalmiray/jipsy.git</connection>
-        <developerConnection>scm:git:git@github.com:aalmiray/jipsy.git</developerConnection>
-        <url>git@github.com:aalmiray/jipsy.git</url>
-        <tag>HEAD</tag>
+        <url>https://github.com/aalmiray/jipsy.git</url>
     </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>bintray</id>
-            <url>https://api.bintray.com/maven/aalmiray/kordamp/jipsy</url>
-        </repository>
-    </distributionManagement>
 
     <build>
         <pluginManagement>
@@ -114,58 +90,32 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.4.1</version>
-                    <configuration>
-                        <useReleaseProfile>false</useReleaseProfile>
-                        <releaseProfiles>release</releaseProfiles>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                    </configuration>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.4</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
-                 <plugin>
-                     <groupId>org.apache.maven.plugins</groupId>
-                     <artifactId>maven-gpg-plugin</artifactId>
-                     <version>1.5</version>
-                     <executions>
-                         <execution>
-                             <id>sign-artifacts</id>
-                             <phase>verify</phase>
-                             <goals>
-                                 <goal>sign</goal>
-                             </goals>
-                         </execution>
-                     </executions>
-                 </plugin>
-                 <plugin>
-                     <groupId>org.apache.maven.plugins</groupId>
-                     <artifactId>maven-source-plugin</artifactId>
-                     <version>2.2.1</version>
-                     <inherited>true</inherited>
-                     <executions>
-                         <execution>
-                             <phase>install</phase>
-                             <goals>
-                                 <goal>jar</goal>
-                             </goals>
-                         </execution>
-                     </executions>
-                 </plugin>
-                 <plugin>
-                     <groupId>org.apache.maven.plugins</groupId>
-                     <artifactId>maven-javadoc-plugin</artifactId>
-                     <version>2.9.1</version>
-                     <inherited>true</inherited>
-                     <executions>
-                         <execution>
-                             <phase>install</phase>
-                             <goals>
-                                 <goal>jar</goal>
-                             </goals>
-                         </execution>
-                     </executions>
-                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.3</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadoc</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
-
 </project>
