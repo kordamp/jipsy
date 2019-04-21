@@ -1,16 +1,17 @@
 = Jipsy
 :author: Andres Almiray
-:version: 0.5.0
+:version: 0.6.0
 :project-name: jipsy
 
 image::media/jipsy-logo.png[]
 
-image:http://img.shields.io/travis/aalmiray/{project-name}/master.svg["Build Status", link="https://travis-ci.org/aalmiray/{project-name}"]
-image:http://img.shields.io/coveralls/aalmiray/{project-name}/master.svg["Coverage Status", link="https://coveralls.io/r/aalmiray/{project-name}"]
-image:http://img.shields.io/:semver-{version}-blue.svg["Semantic Versioning", link="http://semver.org"]
-image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
-image:http://img.shields.io/badge/download-latest-bb00bb.svg[link="https://bintray.com/aalmiray/kordamp/{project-name}/_latestVersion"]
-image:https://img.shields.io/badge/donations-Patreon-orange.svg[link="https://www.patreon.com/user?u=6609318"]
+image:https://img.shields.io/travis/aalmiray/{project-name}/master.svg?logo=travis["Build Status", link="https://travis-ci.org/aalmiray/{project-name}"]
+image:https://img.shields.io/coveralls/aalmiray/{project-name}/master.svg["Coverage Status", link="https://coveralls.io/r/aalmiray/{project-name}"]
+image:https://img.shields.io/:semver-{version}-blue.svg["Semantic Versioning", link="http://semver.org"]
+image:https://img.shields.io/badge/license-ASF2-blue.svg?logo=apache["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
+image:https://img.shields.io/maven-central/v/org.kordamp.jipsy/{project-name}.svg[Download, link="https://search.maven.org/#search|ga|1|{project-name}"]
+image:https://api.bintray.com/packages/aalmiray/kordamp/{project-name}/images/download.svg[Download, link="https://bintray.com/aalmiray/kordmap/{project-name}"]
+image:https://img.shields.io/badge/donations-Patreon-f96854.svg?logo=patreon[link="https://www.patreon.com/user?u=6609318"]
 
 Configurable Java Annotation Processor to simplify the use of the Service Provider Interface.
 
@@ -66,7 +67,7 @@ Et voilà! There are no additional sources to be touched nor files to be created
 
 == Installing
 
-Jipsy is packaged as a standalone jars with no additional dependencies. Jipsy requires JDK6 as a minimum as it relies on the
+Jipsy is packaged as a standalone jars with no additional dependencies. Jipsy requires JDK8 as a minimum as it relies on the
 Annotation Processor facility to do its work. You must enable annotation processing on your IDE if you want Jipsy to work
 correctly.
 
@@ -86,26 +87,13 @@ Jipsy can be downloaded directly from https://bintray.com/aalmiray/kordamp/jipsy
 .Gradle
 [subs="verbatim,attributes"]
 ----
-configurations {
-    compileOnly
-}
 dependencies {
+    annotationProcessor "org.kordamp.jipsy:jipsy:{version}"
     compileOnly "org.kordamp.jipsy:jipsy:{version}"
-}
-sourceSets {
-    main {
-        compileClasspath += configurations.compileOnly
-    }
-}
-// if using the idea plugin
-idea {
-    module {
-        scopes.PROVIDED.plus += configurations.compileOnly
-    }
 }
 ----
 
-Use the `provided` scope in order to mark Jipsy as a compile-only dependency; this also avoids exposing Jipsy to
+NOTE: For Maven, use the `provided` scope in order to mark Jipsy as a compile-only dependency; this also avoids exposing Jipsy to
 consumers of your library.
 
 == Origin

@@ -4,7 +4,7 @@
     <groupId>org.kordamp.jipsy</groupId>
     <artifactId>jipsy-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>http://github.com/aalmiray/jipsy</url>
     <description>Configurable Java Annotation Processor to simplify the use of
@@ -14,6 +14,8 @@
 
     <modules>
         <module>jipsy</module>
+        <module>jipsy-annotations</module>
+        <module>jipsy-util</module>
         <module>jipsy-test-support</module>
         <module>jipsy-tests</module>
     </modules>
@@ -43,7 +45,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>2.7</version>
                     <inherited>true</inherited>
                 </plugin>
                 <plugin>
@@ -75,30 +77,16 @@
                                 <Implementation-Title>${project.name}
                                 </Implementation-Title>
                                 <Implementation-Vendor>
-                                    ${project.organization.name}
+                                    Kordamp
                                 </Implementation-Vendor>
-                                <Implementation-VendorId>${project.groupId}
-                                </Implementation-VendorId>
                                 <Implementation-Version>${project.version}
                                 </Implementation-Version>
-                                <x-Build-Jdk>${java.version} (${java.vendor} ${java.vm.version})</x-Build-Jdk>
-                                <x-Build-Timestamp>${git.build.time}</x-Build-Timestamp>
-                                <x-Build-Revision>${git.commit.id}</x-Build-Revision>
-                                <x-Build-OS>${os.name} ${os.arch} ${os.version}</x-Build-OS>
+                                <Build-Jdk>${java.version} (${java.vendor} ${java.vm.version})</Build-Jdk>
+                                <Build-Timestamp>${git.build.time}</Build-Timestamp>
+                                <Build-Revision>${git.commit.id}</Build-Revision>
                             </manifestEntries>
                         </archive>
                     </configuration>
-                    <!--
-                    <executions>
-                        <execution>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>jar</goal>
-                                <goal>test-jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    -->
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -109,8 +97,8 @@
                         <!-- This is to prevent javac from looking for the actual processor -->
                         <compilerArgument>-proc:none</compilerArgument>
                         <compilerVersion>3.1</compilerVersion>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>1.8</source>
+                        <target>1.8</target>
                         <encoding>utf-8</encoding>
                     </configuration>
                 </plugin>

@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.kordamp.jipsy</groupId>
         <artifactId>jipsy-parent</artifactId>
-        <version>0.5.0</version>
+        <version>0.6.0</version>
     </parent>
 
     <artifactId>jipsy-test-support</artifactId>
@@ -22,5 +22,4 @@
             <version>4.12</version>
         </dependency>
     </dependencies>
-
 </project>
