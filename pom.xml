@@ -6,7 +6,7 @@
     <packaging>pom</packaging>
     <version>0.6.0</version>
     <name>${project.groupId}:${project.artifactId}</name>
-    <url>http://github.com/aalmiray/jipsy</url>
+    <url>http://github.com/kordamp/jipsy</url>
     <description>Configurable Java Annotation Processor to simplify the use of
         the Service Provider Interface
     </description>
@@ -36,7 +36,7 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/aalmiray/jipsy.git</url>
+        <url>https://github.com/kordamp/jipsy.git</url>
     </scm>
 
     <build>

@@ -1,16 +1,21 @@
 = Jipsy
 :author: Andres Almiray
-:version: 0.6.0
-:project-name: jipsy
+:linkattrs:
+:project-owner:   kordamp
+:project-repo:    maven
+:project-name:    gipsy
+:project-group:   org.kordamp.jipsy
+:project-version: 0.6.0
 
 image::media/jipsy-logo.png[]
 
-image:https://img.shields.io/travis/aalmiray/{project-name}/master.svg?logo=travis["Build Status", link="https://travis-ci.org/aalmiray/{project-name}"]
-image:https://img.shields.io/:semver-{version}-blue.svg["Semantic Versioning", link="http://semver.org"]
-image:https://img.shields.io/badge/license-ASF2-blue.svg?logo=apache["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"]
-image:https://img.shields.io/maven-central/v/org.kordamp.jipsy/{project-name}.svg[Download, link="https://search.maven.org/#search|ga|1|{project-name}"]
-image:https://api.bintray.com/packages/aalmiray/kordamp/{project-name}/images/download.svg[Download, link="https://bintray.com/aalmiray/kordmap/{project-name}"]
-image:https://img.shields.io/badge/donations-Patreon-f96854.svg?logo=patreon[link="https://www.patreon.com/user?u=6609318"]
+image:http://img.shields.io/travis/{project-owner}/{project-name}/master.svg["Build Status (travis)", link="https://travis-ci.org/{project-owner}/{project-name}"]
+image:http://img.shields.io/badge/license-ASL2-blue.svg["ASL2 Licensed", link="http://opensource.org/licenses/ASL2"]
+image:https://api.bintray.com/packages/{project-owner}/{project-repo}/{project-name}/images/download.svg[link="https://bintray.com/{project-owner}/{project-repo}/{project-name}/_latestVersion"]
+image:https://img.shields.io/maven-central/v/{project-group}/{project-name}.svg[Download, link="https://search.maven.org/#search|ga|1|{project-name}"]
+image:https://img.shields.io/badge/donations-Patreon-orange.svg[link="https://www.patreon.com/user?u=6609318"]
+
+---
 
 Configurable Java Annotation Processor to simplify the use of the Service Provider Interface.
 
@@ -70,16 +75,16 @@ Jipsy is packaged as a standalone jars with no additional dependencies. Jipsy re
 Annotation Processor facility to do its work. You must enable annotation processing on your IDE if you want Jipsy to work
 correctly.
 
-Jipsy can be downloaded directly from https://bintray.com/aalmiray/kordamp/jipsy[Bintray] or configure it via Maven or Gradle.
+Jipsy can be downloaded directly from https://bintray.com/kordamp/kordamp/jipsy[Bintray] or configure it via Maven or Gradle.
 
 .Maven
 [subs="verbatim,attributes"]
 ----
 <dependency>
-  <groupId>org.kordamp.jipsy</groupId>
-  <artifactId>jipsy</artifactId>
-  <version>{version}</version>
-  <scope>provided</scope>
+    <groupId>{project-group}</groupId>
+    <artifactId>{project-name}</artifactId>
+    <version>{project-version}</version>
+    <scope>provided</scope>
 </dependency>
 ----
 
@@ -87,8 +92,8 @@ Jipsy can be downloaded directly from https://bintray.com/aalmiray/kordamp/jipsy
 [subs="verbatim,attributes"]
 ----
 dependencies {
-    annotationProcessor "org.kordamp.jipsy:jipsy:{version}"
-    compileOnly "org.kordamp.jipsy:jipsy:{version}"
+    annotationProcessor '{project-group}:{project-name}:{project-version}'
+    compileOnly '{project-group}:{project-name}:{project-version}'
 }
 ----
 
