@@ -3,7 +3,7 @@
 :linkattrs:
 :project-owner:   kordamp
 :project-repo:    maven
-:project-name:    gipsy
+:project-name:    jipsy
 :project-group:   org.kordamp.jipsy
 :project-version: 0.6.0
 
