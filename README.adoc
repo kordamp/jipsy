@@ -5,15 +5,12 @@
 :project-repo:    maven
 :project-name:    jipsy
 :project-group:   org.kordamp.jipsy
-:project-version: 0.6.0
+:project-version: 1.0.0-SNAPSHOT
 
 image::media/jipsy-logo.png[]
 
 image:http://img.shields.io/travis/{project-owner}/{project-name}/master.svg["Build Status (travis)", link="https://travis-ci.org/{project-owner}/{project-name}"]
-image:http://img.shields.io/badge/license-ASL2-blue.svg["ASL2 Licensed", link="http://opensource.org/licenses/ASL2"]
-image:https://api.bintray.com/packages/{project-owner}/{project-repo}/{project-name}/images/download.svg[link="https://bintray.com/{project-owner}/{project-repo}/{project-name}/_latestVersion"]
-image:https://img.shields.io/maven-central/v/{project-group}/{project-name}.svg[Download, link="https://search.maven.org/#search|ga|1|{project-name}"]
-image:https://img.shields.io/badge/donations-Patreon-orange.svg[link="https://www.patreon.com/user?u=6609318"]
+image:https://img.shields.io/maven-central/v/{project-group}/{project-name}.svg[Download, link="https://search.maven.org/#search|ga|1|g:{project-group}"]
 
 ---
 
@@ -50,7 +47,7 @@ A basic implementation of such service may be as follows
 ----
 package com.acme;
 
-@org.kordamp.jipsy.ServiceProviderFor(Calculator.class)
+@org.kordamp.jipsy.annotations.ServiceProviderFor(Calculator.class)
 public class BasicCalculator implements Calculator {
     public double add(double a, double b) { return a + b; }
 }
@@ -82,7 +79,7 @@ Jipsy can be downloaded directly from https://bintray.com/kordamp/kordamp/jipsy[
 ----
 <dependency>
     <groupId>{project-group}</groupId>
-    <artifactId>{project-name}</artifactId>
+    <artifactId>{project-name}-processor</artifactId>
     <version>{project-version}</version>
     <scope>provided</scope>
 </dependency>
@@ -92,8 +89,8 @@ Jipsy can be downloaded directly from https://bintray.com/kordamp/kordamp/jipsy[
 [subs="verbatim,attributes"]
 ----
 dependencies {
-    annotationProcessor '{project-group}:{project-name}:{project-version}'
-    compileOnly '{project-group}:{project-name}:{project-version}'
+    annotationProcessor '{project-group}:{project-name}-processor:{project-version}'
+    compileOnly '{project-group}:jipsy-annotations:{project-version}'
 }
 ----
 

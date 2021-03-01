@@ -1,4 +1,21 @@
 /*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Copyright 2013 - 2021 Andres Almiray.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/*
 
 Copyright 2008-2020 TOPdesk, the Netherlands
 
@@ -41,7 +58,7 @@ public class CompilerErrorTest extends NoOutputTestBase {
 
         Diagnostic<JavaFileObject> diagnostic = list.get(0);
         assertEquals(Kind.ERROR, diagnostic.getKind());
-        assertEquals(6, diagnostic.getLineNumber());
+        assertEquals(23, diagnostic.getLineNumber());
         assertEquals("NoExtentionTestClass does not extend java.util.ArrayList", getMessage(diagnostic));
     }
 
@@ -52,7 +69,7 @@ public class CompilerErrorTest extends NoOutputTestBase {
 
         Diagnostic<JavaFileObject> diagnostic = list.get(0);
         assertEquals(Kind.ERROR, diagnostic.getKind());
-        assertEquals(6, diagnostic.getLineNumber());
+        assertEquals(23, diagnostic.getLineNumber());
         assertEquals("NoImplementationTestClass does not implement java.util.RandomAccess", getMessage(diagnostic));
     }
 
@@ -63,7 +80,7 @@ public class CompilerErrorTest extends NoOutputTestBase {
 
         Diagnostic<JavaFileObject> diagnostic = list.get(0);
         assertEquals(Kind.ERROR, diagnostic.getKind());
-        assertEquals(8, diagnostic.getLineNumber());
+        assertEquals(25, diagnostic.getLineNumber());
         assertEquals("InnerNonStaticTestClass is not a static class", getMessage(diagnostic));
     }
 
@@ -74,7 +91,7 @@ public class CompilerErrorTest extends NoOutputTestBase {
 
         Diagnostic<JavaFileObject> diagnostic = list.get(0);
         assertEquals(Kind.ERROR, diagnostic.getKind());
-        assertEquals(6, diagnostic.getLineNumber());
+        assertEquals(23, diagnostic.getLineNumber());
         assertEquals("PackagePrivateTestClass is not a public class", getMessage(diagnostic));
     }
 
@@ -85,7 +102,7 @@ public class CompilerErrorTest extends NoOutputTestBase {
 
         Diagnostic<JavaFileObject> diagnostic = list.get(0);
         assertEquals(Kind.ERROR, diagnostic.getKind());
-        assertEquals(6, diagnostic.getLineNumber());
+        assertEquals(23, diagnostic.getLineNumber());
         assertEquals("EnumTestClass is not a class", getMessage(diagnostic));
     }
 
@@ -96,7 +113,7 @@ public class CompilerErrorTest extends NoOutputTestBase {
 
         Diagnostic<JavaFileObject> diagnostic = list.get(0);
         assertEquals(Kind.ERROR, diagnostic.getKind());
-        assertEquals(6, diagnostic.getLineNumber());
+        assertEquals(23, diagnostic.getLineNumber());
         assertEquals("InterfaceTestClass is not a class", getMessage(diagnostic));
     }
 
@@ -107,7 +124,7 @@ public class CompilerErrorTest extends NoOutputTestBase {
 
         Diagnostic<JavaFileObject> diagnostic = list.get(0);
         assertEquals(Kind.ERROR, diagnostic.getKind());
-        assertEquals(6, diagnostic.getLineNumber());
+        assertEquals(23, diagnostic.getLineNumber());
         assertEquals("NoPublicConstructorTestClass has no public no-args constructor", getMessage(diagnostic));
     }
 
@@ -118,7 +135,7 @@ public class CompilerErrorTest extends NoOutputTestBase {
 
         Diagnostic<JavaFileObject> diagnostic = list.get(0);
         assertEquals(Kind.ERROR, diagnostic.getKind());
-        assertEquals(6, diagnostic.getLineNumber());
+        assertEquals(23, diagnostic.getLineNumber());
         assertEquals("NoNoArgsConstructorTestClass has no public no-args constructor", getMessage(diagnostic));
     }
 
@@ -129,7 +146,7 @@ public class CompilerErrorTest extends NoOutputTestBase {
 
         Diagnostic<JavaFileObject> diagnostic = list.get(0);
         assertEquals(Kind.ERROR, diagnostic.getKind());
-        assertEquals(6, diagnostic.getLineNumber());
+        assertEquals(23, diagnostic.getLineNumber());
         assertEquals("AnnotationTestClass is not a class", getMessage(diagnostic));
     }
 

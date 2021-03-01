@@ -1,141 +1,162 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    SPDX-License-Identifier: Apache-2.0
+
+    Copyright 2013 - 2021 Andres Almiray.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        https://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.kordamp.maven</groupId>
+        <artifactId>kordamp-parent</artifactId>
+        <version>1.2.0</version>
+    </parent>
+
     <groupId>org.kordamp.jipsy</groupId>
     <artifactId>jipsy-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <version>0.6.0</version>
-    <name>${project.groupId}:${project.artifactId}</name>
-    <url>http://github.com/kordamp/jipsy</url>
+
+    <properties>
+        <project.identifier>jipsy</project.identifier>
+        <project.github.repository>kordamp/jipsy</project.github.repository>
+        <local.repository.path>/tmp/repository</local.repository.path>
+        <pomchecker.version>${project.version}</pomchecker.version>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.compilerVersion>3.1</maven.compiler.compilerVersion>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <version.moditect.plugin>1.0.0.Beta2</version.moditect.plugin>
+    </properties>
+
+    <name>${project.artifactId}</name>
     <description>Configurable Java Annotation Processor to simplify the use of
-        the Service Provider Interface
-    </description>
+        the Service Provider Interface</description>
+    <url>http://github.com/kordamp/jipsy</url>
     <inceptionYear>2013</inceptionYear>
 
-    <modules>
-        <module>jipsy</module>
-        <module>jipsy-annotations</module>
-        <module>jipsy-util</module>
-        <module>jipsy-test-support</module>
-        <module>jipsy-tests</module>
-    </modules>
-
-    <developers>
-        <developer>
-            <id>aalmiray</id>
-            <name>Andres Almiray</name>
-        </developer>
-    </developers>
-
-    <licenses>
-        <license>
-            <name>Apache License Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
     <scm>
-        <url>https://github.com/kordamp/jipsy.git</url>
+        <connection>scm:git:${repository.url}</connection>
+        <developerConnection>scm:git:${repository.url}</developerConnection>
+        <tag>HEAD</tag>
+        <url>${repository.url}</url>
     </scm>
+
+    <modules>
+        <module>jipsy-annotations</module>
+        <module>jipsy-processor</module>
+        <module>jipsy-util</module>
+    </modules>
 
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.7</version>
-                    <inherited>true</inherited>
-                </plugin>
-                <plugin>
-                    <groupId>pl.project13.maven</groupId>
-                    <artifactId>git-commit-id-plugin</artifactId>
-                    <version>2.2.4</version>
-                    <executions>
-                        <execution>
-                            <id>get-the-git-infos</id>
-                            <goals>
-                                <goal>revision</goal>
-                            </goals>
-                            <phase>validate</phase>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <dateFormat>yyyy-MM-dd'T'HH:mm:ss.SSSZ</dateFormat>
-                    </configuration>
-                </plugin>
-                <!-- Add default manifest information -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.1.0</version>
-                    <inherited>true</inherited>
-                    <configuration>
-                        <archive>
-                            <manifestEntries>
-                                <Implementation-Title>${project.name}
-                                </Implementation-Title>
-                                <Implementation-Vendor>
-                                    Kordamp
-                                </Implementation-Vendor>
-                                <Implementation-Version>${project.version}
-                                </Implementation-Version>
-                                <Build-Jdk>${java.version} (${java.vendor} ${java.vm.version})</Build-Jdk>
-                                <Build-Timestamp>${git.build.time}</Build-Timestamp>
-                                <Build-Revision>${git.commit.id}</Build-Revision>
-                            </manifestEntries>
-                        </archive>
-                    </configuration>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.0</version>
-                    <inherited>true</inherited>
                     <configuration>
-                        <!-- This is to prevent javac from looking for the actual processor -->
                         <compilerArgument>-proc:none</compilerArgument>
-                        <compilerVersion>3.1</compilerVersion>
-                        <source>1.8</source>
-                        <target>1.8</target>
-                        <encoding>utf-8</encoding>
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>3.0.1</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.0.1</version>
-                    <executions>
-                        <execution>
-                            <id>attach-javadoc</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                    <groupId>org.moditect</groupId>
+                    <artifactId>moditect-maven-plugin</artifactId>
+                    <version>${version.moditect.plugin}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
 
         <plugins>
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <configuration combine.self="override">
+                    <header>${rootdir}/etc/license.txt</header>
+                    <strictCheck>true</strictCheck>
+                    <properties>
+                        <author>Andres Almiray</author>
+                    </properties>
+                    <excludes>
+                        <exclude>**/*.adoc</exclude>
+                        <exclude>LICENSE</exclude>
+                        <exclude>NOTICE.txt</exclude>
+                        <exclude>.github/**/*</exclude>
+                        <exclude>mvnw</exclude>
+                        <exclude>mvnw.cmd</exclude>
+                        <exclude>.mvn/wrapper/*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>test</id>
+            <activation>
+                <property>
+                    <name>release</name>
+                    <value>!true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>jipsy-test-support</module>
+                <module>jipsy-tests</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>publication</id>
+            <activation>
+                <property>
+                    <name>release</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.coderplus.maven.plugins</groupId>
+                        <artifactId>copy-rename-maven-plugin</artifactId>
+                        <version>1.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>copy-notice-file</id>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <phase>generate-sources</phase>
+                                <configuration>
+                                    <sourceFile>${session.executionRootDirectory}/NOTICE.txt</sourceFile>
+                                    <destinationFile>${project.build.outputDirectory}/META-INF/NOTICE-${project.identifier}</destinationFile>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
