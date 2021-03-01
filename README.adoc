@@ -2,10 +2,9 @@
 :author: Andres Almiray
 :linkattrs:
 :project-owner:   kordamp
-:project-repo:    maven
 :project-name:    jipsy
 :project-group:   org.kordamp.jipsy
-:project-version: 1.0.0-SNAPSHOT
+:project-version: 1.0.0
 
 image::media/jipsy-logo.png[]
 
