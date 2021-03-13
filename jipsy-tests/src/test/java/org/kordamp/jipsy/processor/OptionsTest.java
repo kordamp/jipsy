@@ -54,7 +54,7 @@ import static junit.framework.Assert.assertTrue;
 
 public class OptionsTest extends NoOutputTestBase {
 
-    private JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    private final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
     @Test
     public void testDisabledDefault() {
@@ -201,7 +201,7 @@ public class OptionsTest extends NoOutputTestBase {
     }
 
     private Options getOptions(String... parameters) {
-        List<String> compilerOptions = new ArrayList<String>();
+        List<String> compilerOptions = new ArrayList<>();
         compilerOptions.addAll(Arrays.asList(parameters));
         compilerOptions.addAll(OutputDir.getOptions());
         CompilationTask task = compiler.getTask(null, null, null, compilerOptions, null, TestJavaFileObject.ONLY_HELLO_WORLD);

@@ -38,7 +38,6 @@ package org.kordamp.jipsy.processor.testutils;
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -60,7 +59,7 @@ public final class TestJavaFileObject extends SimpleJavaFileObject {
     }
 
     @Override
-    public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
+    public CharSequence getCharContent(boolean ignoreEncodingErrors) {
         return programText;
     }
 
@@ -77,14 +76,14 @@ public final class TestJavaFileObject extends SimpleJavaFileObject {
     }
 
     public static Iterable<? extends JavaFileObject> read(FileType type, String... names) throws IOException {
-        List<JavaFileObject> result = new ArrayList<JavaFileObject>();
+        List<JavaFileObject> result = new ArrayList<>();
         for (String name : names) {
             result.add(new TestJavaFileObject(name, readFile(type, name)));
         }
         return result;
     }
 
-    private static CharSequence readFile(FileType type, String name) throws FileNotFoundException, IOException {
+    private static CharSequence readFile(FileType type, String name) throws IOException {
         BufferedReader reader = new BufferedReader(
             new InputStreamReader(TestJavaFileObject.class.getClassLoader().getResourceAsStream(
                 type.getLocation() + "/" + name + ".java")));

@@ -48,6 +48,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class CollectorTest extends NoOutputTestBase {
@@ -58,7 +59,7 @@ public class CollectorTest extends NoOutputTestBase {
 
     @Before
     public void loadFrameWork() {
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         map.put("service1", "provider1\n");
         map.put("service2", "provider1\nprovider2\n");
         map.put("service3", "provider1\nprovider3\n");
@@ -149,7 +150,7 @@ public class CollectorTest extends NoOutputTestBase {
     public void testServicesDuplicate() {
         Service service1 = collector.get("service1");
         Service service2 = collector.get("service1");
-        assertTrue(service1 == service2);
+        assertSame(service1, service2);
         Collection<Service> services = collector.values();
         assertEquals(1, services.size());
         assertTrue(services.contains(service1));

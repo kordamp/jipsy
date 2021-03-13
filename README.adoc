@@ -11,7 +11,7 @@ image::media/jipsy-logo.png[]
 image:https://github.com/{project-owner}/{project-name}/workflows/Build/badge.svg["Build Status", link="https://github.com/{project-owner}/{project-name}/actions"]
 image:https://img.shields.io/maven-central/v/{project-group}/jipsy-processor.svg[Download, link="https://search.maven.org/search?q=jipsy-processor"]
 
----
+'''
 
 Configurable Java Annotation Processor to simplify the use of the Service Provider Interface.
 

@@ -19,10 +19,8 @@ package org.kordamp.jipsy.processor.type;
 
 import org.kordamp.jipsy.processor.AbstractResourcePersistence;
 import org.kordamp.jipsy.processor.Logger;
-import org.kordamp.jipsy.processor.SimpleFileFilter;
 
 import javax.annotation.processing.Filer;
-import java.io.FileFilter;
 
 /**
  * @author Andres Almiray

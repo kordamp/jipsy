@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class TypeCollectorTest extends NoOutputTestBase {
@@ -36,7 +37,7 @@ public class TypeCollectorTest extends NoOutputTestBase {
 
     @Before
     public void loadFrameWork() {
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         map.put("type1", "provider1\n");
         map.put("type2", "provider1\nprovider2\n");
         map.put("type3", "provider1\nprovider3\n");
@@ -127,7 +128,7 @@ public class TypeCollectorTest extends NoOutputTestBase {
     public void testTypesDuplicate() {
         Type type1 = collector.get("type1");
         Type type2 = collector.get("type1");
-        assertTrue(type1 == type2);
+        assertSame(type1, type2);
         Collection<Type> types = collector.values();
         assertEquals(1, types.size());
         assertTrue(types.contains(type1));

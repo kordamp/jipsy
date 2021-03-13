@@ -49,18 +49,9 @@ public interface Persistence {
     Collection<String> tryFind();
 
     /**
-     * Convert the array of files into a collection of the the file names.
-     *
-     * @param list the files to convert
-     * @return a collection containing the file names. Possibly an empty collection of the array langth is zero or the
-     * array parameter {@code list} is {@code null}.
-     */
-    Collection<String> listDiscoveredFiles(File[] list);
-
-    /**
      * Delete the file that should contain the resource.
      *
-     * @throws IOException
+     * @throws IOException if the deletion of the resource is not possible for some reason
      */
     void delete() throws IOException;
 }

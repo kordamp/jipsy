@@ -33,7 +33,7 @@ public abstract class AbstractPersistence implements Persistence {
     protected final String path;
     protected final Logger logger;
 
-    public AbstractPersistence(String name, Logger logger, String path) {
+    protected AbstractPersistence(String name, Logger logger, String path) {
         this.name = name;
         this.logger = logger;
         this.path = path;
@@ -72,8 +72,14 @@ public abstract class AbstractPersistence implements Persistence {
         return fileList;
     }
 
-    @Override
-    public Collection<String> listDiscoveredFiles(File[] list) {
+    /**
+     * Convert the array of files into a collection of the the file names.
+     *
+     * @param list the files to convert
+     * @return a collection containing the file names. Possibly an empty collection of the array langth is zero or the
+     * array parameter {@code list} is {@code null}.
+     */
+    private Collection<String> listDiscoveredFiles(File[] list) {
         if (list == null) {
             return Collections.emptyList();
         }

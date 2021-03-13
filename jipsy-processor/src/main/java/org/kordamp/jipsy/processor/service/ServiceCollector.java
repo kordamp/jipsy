@@ -91,17 +91,19 @@ public final class ServiceCollector implements ProvidedCollector {
     @Override
     public Service get(String service) {
         requireNonNull(service,"service");
-        return services.computeIfAbsent(service, (s) -> {
-            Service newService = new Service(logger, s);
-            CharSequence initialData = initializer.initialData(s);
-            if (initialData != null) {
-                newService.fromProviderNamesList(initialData.toString());
-                for (String provider : removed) {
-                    newService.removeProvider(provider);
-                }
+        return services.computeIfAbsent(service, this::newService );
+    }
+
+    private Service newService(String name){
+        final Service newService = new Service(logger, name);
+        CharSequence initialData = initializer.initialData(name);
+        if (initialData != null) {
+            newService.fromProviderNamesList(initialData.toString());
+            for (String provider : removed) {
+                newService.removeProvider(provider);
             }
-            return newService;
-        });
+        }
+        return newService;
     }
 
     /**

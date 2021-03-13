@@ -38,7 +38,7 @@ public abstract class AbstractResourceInitializer implements Initializer {
     protected final String path;
     protected final Logger logger;
 
-    public AbstractResourceInitializer(Logger logger, String path, Filer filer) {
+    protected AbstractResourceInitializer(Logger logger, String path, Filer filer) {
         this.logger = logger;
         this.path = path;
         this.filer = filer;

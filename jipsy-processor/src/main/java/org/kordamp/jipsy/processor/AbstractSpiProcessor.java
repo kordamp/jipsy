@@ -29,6 +29,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
+import javax.lang.model.element.QualifiedNameable;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
@@ -196,8 +197,8 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
     /**
      * Report an error on a given element.
      *
-     * @param element
-     * @param result
+     * @param element the element that the report is about
+     * @param result the error message holding {@link CheckResult}
      * @return {@code true}
      */
     protected boolean reportError(Element element, CheckResult result) {
@@ -248,7 +249,7 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
     private void checkJavacOnLinux() {
         try {
             FileObject resource = processingEnv.getFiler().getResource(StandardLocation.CLASS_OUTPUT, "", options.dir() + "a/b");
-            if (resource.toUri().toString().equals("b")) {
+            if ("b".equals(resource.toUri().toString())) {
                 reportMandatoryWarning("Output files will be placed in the root of the output folder.\n" +
                     "  This is a known bug in the java compiler on Linux.\n" +
                     "  Please use the -d compiler option to circumvent this problem.\n" +
@@ -266,7 +267,7 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
      * @param roundEnv the execution processor environment for the actual round
      */
     private void handleAnnotations(RoundEnvironment roundEnv) {
-        roundEnv.getElementsAnnotatedWith(getAnnotationClass()).stream().forEach(this::handleElement);
+        roundEnv.getElementsAnnotatedWith(getAnnotationClass()).forEach(this::handleElement);
     }
 
     protected boolean hasModifier(Element element, Modifier modifier) {
@@ -354,7 +355,7 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
      * @return {@code true} if the {@code annotation} has the name we are {@code lookingFor}.
      */
     protected static boolean annotationMirrorMatches(AnnotationMirror annotation, String lookingFor) {
-        Name qualifiedName = ((TypeElement) (annotation.getAnnotationType()).asElement()).getQualifiedName();
+        Name qualifiedName = ((QualifiedNameable) (annotation.getAnnotationType()).asElement()).getQualifiedName();
         return qualifiedName.contentEquals(lookingFor);
     }
 

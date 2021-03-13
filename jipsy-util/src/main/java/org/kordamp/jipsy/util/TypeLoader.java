@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author Andres Almiray
  */
-public class TypeLoader {
+public final class TypeLoader {
     private static final Logger LOG = LoggerFactory.getLogger(TypeLoader.class);
     private static final String HASH = "#";
 
@@ -127,9 +127,9 @@ public class TypeLoader {
 
     private static void handleFileResource(URL url, ClassLoader classLoader, String path, PathFilter pathFilter, ResourceProcessor processor) {
         try {
-            File file = new File(url.toURI());
-            if (file != null) {
-                for (File entry : file.listFiles()) {
+            File[] files = new File(url.toURI()).listFiles();
+            if( files != null ) {
+                for (File entry : files) {
                     if (pathFilter.accept(entry.getName())) {
                         try (Scanner scanner = new Scanner(entry)) {
                             while (scanner.hasNextLine()) {
@@ -175,14 +175,17 @@ public class TypeLoader {
         }
     }
 
+    @FunctionalInterface
     public interface PathFilter {
         boolean accept(String path);
     }
 
+    @FunctionalInterface
     public interface LineProcessor {
         void process(ClassLoader classLoader, Class<?> type, String line);
     }
 
+    @FunctionalInterface
     public interface ResourceProcessor {
         void process(ClassLoader classLoader, String line);
     }
