@@ -20,25 +20,19 @@ package org.kordamp.jipsy.processor.type;
 import org.kordamp.jipsy.annotations.TypeProviderFor;
 import org.kordamp.jipsy.processor.AbstractSpiProcessor;
 import org.kordamp.jipsy.processor.CheckResult;
-import org.kordamp.jipsy.processor.LogLocation;
 import org.kordamp.jipsy.processor.Options;
 import org.kordamp.jipsy.processor.Persistence;
 
-import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedOptions;
-import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic.Kind;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
+import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author Andres Almiray
@@ -49,29 +43,23 @@ public class TypeProviderProcessor extends AbstractSpiProcessor {
     public static final String NAME = TypeProviderProcessor.class.getName()
         + " (" + TypeProviderProcessor.class.getPackage().getImplementationVersion() + ")";
 
-    private static final int MAX_SUPPORTED_VERSION = 8;
 
     private Persistence persistence;
     private TypeCollector data;
 
     @Override
-    protected Class<? extends Annotation> getAnnotationClass() {
-        return TypeProviderFor.class;
+    protected Persistence getPersistence() {
+        return persistence;
     }
 
     @Override
-    public SourceVersion getSupportedSourceVersion() {
-        SourceVersion[] svs = SourceVersion.values();
-        for (int i = svs.length - 1; i >= 0; i--) {
-            String name = svs[i].name();
-            Matcher m = RELEASE_PATTERN.matcher(name);
-            if (m.matches()) {
-                int release = Integer.parseInt(m.group(1));
-                if (release <= MAX_SUPPORTED_VERSION) return svs[i];
-            }
-        }
+    protected TypeCollector getData() {
+        return data;
+    }
 
-        return SourceVersion.RELEASE_6;
+    @Override
+    protected Class<? extends Annotation> getAnnotationClass() {
+        return TypeProviderFor.class;
     }
 
     @Override
@@ -81,72 +69,29 @@ public class TypeProviderProcessor extends AbstractSpiProcessor {
         persistence = new TypePersistence(NAME, options.dir(), processingEnv.getFiler(), logger);
         data = new TypeCollector(persistence.getInitializer(), logger);
 
-        // Initialize if possible
-        for (String typeName : persistence.tryFind()) {
-            data.getType(typeName);
-        }
-        data.cache();
+        initializeIfPossible(data, persistence);
     }
 
-    @Override
-    protected void writeData() {
-        if (data.isModified()) {
-            if (data.types().isEmpty()) {
-                logger.note(LogLocation.LOG_FILE, "Writing output");
-                try {
-                    persistence.delete();
-                } catch (IOException e) {
-                    logger.warning(LogLocation.LOG_FILE, "An error occurred while deleting data file");
-                }
-            } else {
-                logger.note(LogLocation.LOG_FILE, "Writing output");
-                for (Type type : data.types()) {
-                    try {
-                        persistence.write(type.getName(), type.toProviderNamesList());
-                    } catch (IOException e) {
-                        processingEnv.getMessager().printMessage(Kind.ERROR, e.getMessage());
-                    }
-                }
-                persistence.writeLog();
-            }
-        }
+    protected Stream<AnnotationValue> enrich(Stream<? extends AnnotationMirror> poor) {
+        return poor.map(this::findSingleValueMember);
     }
 
-    @Override
-    protected void removeStaleData(RoundEnvironment roundEnv) {
-        for (Element e : roundEnv.getRootElements()) {
-            if (e instanceof TypeElement) {
-                TypeElement currentClass = (TypeElement) e;
-                data.removeProvider(createProperQualifiedName(currentClass));
-            }
-        }
+    private AnnotationValue findSingleValueMember(AnnotationMirror mirror) {
+        return mirror.getElementValues().entrySet().stream()
+            .filter(entry -> entry.getKey().getSimpleName().contentEquals("value"))
+            .findFirst()
+            .map(Map.Entry::getValue)
+            .orElseThrow(() -> new IllegalStateException("No value found in element"));
     }
 
-    @Override
-    protected void handleElement(Element e) {
-        if (!(e instanceof TypeElement)) {
-            return;
-        }
-
-        TypeElement currentClass = (TypeElement) e;
-
-        CheckResult checkResult = checkCurrentClass(currentClass);
-        if (checkResult.isError()) {
-            reportError(currentClass, checkResult);
-            return;
-        }
-
-        for (TypeElement type : findTypes(currentClass)) {
-            CheckResult implementationResult = isImplementation(currentClass, type);
-            if (implementationResult.isError()) {
-                reportError(currentClass, implementationResult);
-            } else {
-                register(createProperQualifiedName(type), currentClass);
-            }
-        }
-    }
-
-    private CheckResult checkCurrentClass(TypeElement currentClass) {
+    /**
+     * Check that the type element {@code currentClass} meets all the requirements that are needed to be a provider.
+     * First of all it is a class, and it is public, and nothing else is checked in this case.
+     *
+     * @param currentClass the class to check
+     * @return the result, which is {@linkplain CheckResult#OK} if there is no problem.
+     */
+    protected CheckResult checkCurrentClass(Element currentClass) {
         if (currentClass.getKind() != ElementKind.CLASS || currentClass.getKind() != ElementKind.INTERFACE) {
             return CheckResult.valueOf("is not a class nor an interface");
         }
@@ -156,19 +101,5 @@ public class TypeProviderProcessor extends AbstractSpiProcessor {
         }
 
         return CheckResult.OK;
-    }
-
-    private List<TypeElement> findTypes(TypeElement classElement) {
-        List<TypeElement> types = new ArrayList<>();
-
-        for (AnnotationMirror annotation : findAnnotationMirrors(classElement, getAnnotationClass().getName())) {
-            types.add(toElement(findSingleValueMember(annotation, "value")));
-        }
-
-        return types;
-    }
-
-    private void register(String typeName, TypeElement provider) {
-        data.getType(typeName).addProvider(createProperQualifiedName(provider));
     }
 }

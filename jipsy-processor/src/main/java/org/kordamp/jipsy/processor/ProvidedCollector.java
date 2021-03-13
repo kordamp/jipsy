@@ -32,18 +32,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 */
+package org.kordamp.jipsy.processor;
 
-package org.kordamp.jipsy.processor.service;
+import java.util.Collection;
 
-import org.kordamp.jipsy.processor.AbstractResourcePersistence;
-import org.kordamp.jipsy.processor.Logger;
-import org.kordamp.jipsy.processor.SimpleFileFilter;
-
-import javax.annotation.processing.Filer;
-import java.io.FileFilter;
-
-public class ServicePersistence extends AbstractResourcePersistence {
-    public ServicePersistence(String name, String root, Filer filer, Logger logger) {
-        super(filer, name, logger, root + "META-INF/services/");
-    }
+public interface ProvidedCollector {
+    Collection<? extends Provided> values();
+    boolean isModified();
+    void cache();
+    Provided get(String name);
+    void removeProvider(String name);
 }

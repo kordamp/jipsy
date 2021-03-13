@@ -61,8 +61,6 @@ public abstract class AbstractResourcePersistence extends AbstractPersistence {
             // for javac using the -d parameter.
             // See http://forums.sun.com/thread.jspa?threadID=5240999&tstart=45
             // and http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6647996
-
-//			logger.toConsole("IllegalArgumentException: " + e.getMessage());
             return null;
         }
 
@@ -88,7 +86,6 @@ public abstract class AbstractResourcePersistence extends AbstractPersistence {
 
     @Override
     protected Writer createWriter(String name) throws IOException {
-        FileObject output = createResourceFile(name);
-        return output.openWriter();
+        return createResourceFile(name).openWriter();
     }
 }

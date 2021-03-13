@@ -38,14 +38,24 @@ package org.kordamp.jipsy.processor.service;
 import org.kordamp.jipsy.processor.Initializer;
 import org.kordamp.jipsy.processor.LogLocation;
 import org.kordamp.jipsy.processor.Logger;
+import org.kordamp.jipsy.processor.ProvidedCollector;
 
 import java.util.*;
 
-public final class ServiceCollector {
-    private final Map<String, Service> services = new LinkedHashMap<String, Service>();
-    private final Map<String, Service> cached = new LinkedHashMap<String, Service>();
+import static java.util.Objects.requireNonNull;
 
-    private final List<String> removed = new ArrayList<String>();
+/**
+ * Maintain a list of services. You can query the services by the name and in case service is not in the list it will
+ * be loaded from the {@code META-INF/services} directory files.
+ * <p>
+ * At any time the list of the services can be cached, which is a kind of snapshot and later you can query if there was
+ * any modification to the list of the service.
+ */
+public final class ServiceCollector implements ProvidedCollector {
+    private final Map<String, Service> services = new LinkedHashMap<>();
+    private final Map<String, Service> cached = new LinkedHashMap<>();
+
+    private final List<String> removed = new ArrayList<>();
     private final Initializer initializer;
     private final Logger logger;
 
@@ -54,53 +64,61 @@ public final class ServiceCollector {
         this.logger = logger;
     }
 
+    /**
+     * Create a snapshot of the services into the cache.
+     */
     public void cache() {
         this.cached.putAll(services);
     }
 
+    /**
+     *
+     * @return {@code true} if there was a modification since the service was cached/snapshot made.
+     */
     public boolean isModified() {
-        if (cached.size() != services.size()) {
-            return true;
-        }
-
-        for (Map.Entry<String, Service> e : cached.entrySet()) {
-            if (!services.containsKey(e.getKey())) {
-                return true;
-            }
-            if (!e.getValue().equals(services.get(e.getKey()))) {
-                return true;
-            }
-        }
-
-        return false;
+        return cached.size() != services.size() ||
+            cached.entrySet().stream().anyMatch(
+                e -> !services.containsKey(e.getKey()) || !e.getValue().equals(services.get(e.getKey())));
     }
 
-    public Service getService(String service) {
-        if (service == null) {
-            throw new NullPointerException("service");
-        }
-        if (!services.containsKey(service)) {
-            Service newService = new Service(logger, service);
-            CharSequence initialData = initializer.initialData(service);
+    /**
+     * Get a service for the name of the interface name. If the service is not in the list for this interface name then
+     * load it looking at the accordingly named {@code META-INF/services/xxx} files.
+     *
+     * @param service the fully qualified name of the interface the service providers have to implement.
+     * @return the service instance.
+     */
+    @Override
+    public Service get(String service) {
+        requireNonNull(service,"service");
+        return services.computeIfAbsent(service, (s) -> {
+            Service newService = new Service(logger, s);
+            CharSequence initialData = initializer.initialData(s);
             if (initialData != null) {
                 newService.fromProviderNamesList(initialData.toString());
                 for (String provider : removed) {
                     newService.removeProvider(provider);
                 }
             }
-            services.put(service, newService);
-        }
-        return services.get(service);
+            return newService;
+        });
     }
 
-    public Collection<Service> services() {
+    /**
+     * @return the collection of the services
+     */
+    @Override
+    public Collection<Service> values() {
         return Collections.unmodifiableMap(services).values();
     }
 
+    /**
+     * Remove a provider from all the services that it provides.
+     *
+     * @param provider the fully qualified name of the class
+     */
     public void removeProvider(String provider) {
-        if (provider == null) {
-            throw new NullPointerException("provider");
-        }
+        requireNonNull(provider,"provider");
         logger.note(LogLocation.LOG_FILE, "Removing " + provider);
         removed.add(provider);
         for (Service service : services.values()) {

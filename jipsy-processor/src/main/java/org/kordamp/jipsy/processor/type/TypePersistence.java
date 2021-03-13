@@ -31,9 +31,4 @@ public class TypePersistence extends AbstractResourcePersistence {
     public TypePersistence(String name, String root, Filer filer, Logger logger) {
         super(filer, name, logger, root + "META-INF/types/");
     }
-
-    @Override
-    protected FileFilter getFileFilter() {
-        return SimpleFileFilter.INSTANCE;
-    }
 }

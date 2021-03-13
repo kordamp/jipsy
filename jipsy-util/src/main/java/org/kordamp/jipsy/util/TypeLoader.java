@@ -54,18 +54,19 @@ public class TypeLoader {
         requireNonNull(type, "Argument 'type' must not be null");
         requireNonNull(processor, "Argument 'processor' must not be null");
         // "The name of a resource is a /-separated path name that identifies the resource."
-        String normalizedPath = path.endsWith("/") ? path : path + "/";
+        final String normalizedPath = path.endsWith("/") ? path : path + "/";
 
-        Enumeration<URL> urls;
+        final Enumeration<URL> urls;
 
         try {
             urls = classLoader.getResources(normalizedPath + type.getName());
+            if (urls == null) {
+                return false;
+            }
         } catch (IOException ioe) {
             LOG.error(ioe.getClass().getName() + " error loading resources of type \"" + type.getName() + "\" from \"" + normalizedPath + "\".");
             return false;
         }
-
-        if (urls == null) { return false; }
 
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
@@ -74,7 +75,9 @@ public class TypeLoader {
             try (Scanner scanner = new Scanner(url.openStream())) {
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
-                    if (line.startsWith(HASH) || isBlank(line)) { continue; }
+                    if (line.startsWith(HASH) || isBlank(line)) {
+                        continue;
+                    }
                     processor.process(classLoader, type, line);
                 }
             } catch (IOException e) {
@@ -100,7 +103,9 @@ public class TypeLoader {
             return false;
         }
 
-        if (urls == null) { return false; }
+        if (urls == null) {
+            return false;
+        }
 
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
@@ -123,16 +128,18 @@ public class TypeLoader {
     private static void handleFileResource(URL url, ClassLoader classLoader, String path, PathFilter pathFilter, ResourceProcessor processor) {
         try {
             File file = new File(url.toURI());
-            for (File entry : file.listFiles()) {
-                if (pathFilter.accept(entry.getName())) {
-                    try (Scanner scanner = new Scanner(entry)) {
-                        while (scanner.hasNextLine()) {
-                            String line = scanner.nextLine();
-                            if (line.startsWith(HASH) || isBlank(line)) { continue; }
-                            processor.process(classLoader, line);
+            if (file != null) {
+                for (File entry : file.listFiles()) {
+                    if (pathFilter.accept(entry.getName())) {
+                        try (Scanner scanner = new Scanner(entry)) {
+                            while (scanner.hasNextLine()) {
+                                String line = scanner.nextLine();
+                                if (line.startsWith(HASH) || isBlank(line)) { continue; }
+                                processor.process(classLoader, line);
+                            }
+                        } catch (IOException e) {
+                            LOG.warn("An error occurred while loading resources from " + entry.getAbsolutePath(), e);
                         }
-                    } catch (IOException e) {
-                        LOG.warn("An error occurred while loading resources from " + entry.getAbsolutePath(), e);
                     }
                 }
             }
@@ -193,10 +200,9 @@ public class TypeLoader {
         return true;
     }
 
-    private static String requireNonBlank(String str, String message) {
+    private static void requireNonBlank(String str, String message) {
         if (isBlank(str)) {
             throw new IllegalArgumentException(message);
         }
-        return str;
     }
 }

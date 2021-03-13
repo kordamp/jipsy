@@ -20,6 +20,8 @@ package org.kordamp.jipsy.processor.type;
 import org.kordamp.jipsy.processor.Initializer;
 import org.kordamp.jipsy.processor.LogLocation;
 import org.kordamp.jipsy.processor.Logger;
+import org.kordamp.jipsy.processor.Provided;
+import org.kordamp.jipsy.processor.ProvidedCollector;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +33,7 @@ import java.util.Map;
 /**
  * @author Andres Almiray
  */
-public final class TypeCollector {
+public final class TypeCollector implements ProvidedCollector {
     private final Map<String, Type> types = new LinkedHashMap<>();
     private final Map<String, Type> cached = new LinkedHashMap<>();
 
@@ -65,7 +67,8 @@ public final class TypeCollector {
         return false;
     }
 
-    public Type getType(String type) {
+    @Override
+    public Type get(String type) {
         if (type == null) {
             throw new NullPointerException("type");
         }
@@ -83,7 +86,8 @@ public final class TypeCollector {
         return types.get(type);
     }
 
-    public Collection<Type> types() {
+    @Override
+    public Collection<Type> values() {
         return Collections.unmodifiableMap(types).values();
     }
 

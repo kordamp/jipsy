@@ -19,6 +19,7 @@ package org.kordamp.jipsy.processor.type;
 
 import org.kordamp.jipsy.processor.LogLocation;
 import org.kordamp.jipsy.processor.Logger;
+import org.kordamp.jipsy.processor.Provided;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +30,7 @@ import java.util.Set;
 /**
  * @author Andres Almiray
  */
-public final class Type {
+public final class Type implements Provided {
     private final Logger logger;
     private final String typeName;
     private final Set<String> providers = new LinkedHashSet<>();
