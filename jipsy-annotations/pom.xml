@@ -47,7 +47,7 @@
                             <jvmVersion>9</jvmVersion>
                             <module>
                                 <moduleInfoSource>module org.kordamp.jipsy.annotations {
-                                        exports og.kordamp.jipsy.annotations;
+                                        exports org.kordamp.jipsy.annotations;
                                     }</moduleInfoSource>
                             </module>
                         </configuration>
