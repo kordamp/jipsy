@@ -93,7 +93,7 @@ public class ProcessorLoggerTest extends NoOutputTestBase {
         ProcessorLogger logger = new ProcessorLogger(messager, o);
 
         List<Message> messages = messager.messages();
-        List<String> warnings = new ArrayList<>(o.getWarnings());
+        List<String> warnings = new ArrayList<String>(o.getWarnings());
         assertEquals(o.report(), messages.get(0).msg);
         assertEquals(warnings.size() + 1, messages.size());
 

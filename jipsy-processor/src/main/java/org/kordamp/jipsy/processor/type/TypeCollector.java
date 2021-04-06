@@ -20,7 +20,6 @@ package org.kordamp.jipsy.processor.type;
 import org.kordamp.jipsy.processor.Initializer;
 import org.kordamp.jipsy.processor.LogLocation;
 import org.kordamp.jipsy.processor.Logger;
-import org.kordamp.jipsy.processor.ProvidedCollector;
 
 import java.util.ArrayList;
 import java.util.Collection;

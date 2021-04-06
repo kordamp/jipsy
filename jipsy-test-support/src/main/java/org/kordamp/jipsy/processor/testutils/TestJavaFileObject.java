@@ -77,14 +77,14 @@ public final class TestJavaFileObject extends SimpleJavaFileObject {
     }
 
     public static Iterable<? extends JavaFileObject> read(FileType type, String... names) throws IOException {
-        List<JavaFileObject> result = new ArrayList<>();
+        List<JavaFileObject> result = new ArrayList<JavaFileObject>();
         for (String name : names) {
             result.add(new TestJavaFileObject(name, readFile(type, name)));
         }
         return result;
     }
 
-    private static CharSequence readFile(FileType type, String name) throws IOException {
+    private static CharSequence readFile(FileType type, String name) throws FileNotFoundException, IOException {
         BufferedReader reader = new BufferedReader(
             new InputStreamReader(TestJavaFileObject.class.getClassLoader().getResourceAsStream(
                 type.getLocation() + "/" + name + ".java")));

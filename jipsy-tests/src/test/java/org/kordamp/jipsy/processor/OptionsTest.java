@@ -201,7 +201,7 @@ public class OptionsTest extends NoOutputTestBase {
     }
 
     private Options getOptions(String... parameters) {
-        List<String> compilerOptions = new ArrayList<>();
+        List<String> compilerOptions = new ArrayList<String>();
         compilerOptions.addAll(Arrays.asList(parameters));
         compilerOptions.addAll(OutputDir.getOptions());
         CompilationTask task = compiler.getTask(null, null, null, compilerOptions, null, TestJavaFileObject.ONLY_HELLO_WORLD);
