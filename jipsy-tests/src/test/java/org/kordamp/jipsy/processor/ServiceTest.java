@@ -46,7 +46,7 @@ import static junit.framework.Assert.assertTrue;
 
 public class ServiceTest extends NoOutputTestBase {
 
-    final TestLogger logger = new TestLogger();
+    TestLogger logger = new TestLogger();
 
     @Test(expected = NullPointerException.class)
     public void testConstructorLoggerNull() {

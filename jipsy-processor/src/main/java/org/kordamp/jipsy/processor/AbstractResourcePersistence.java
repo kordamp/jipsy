@@ -32,7 +32,7 @@ import java.net.URI;
 public abstract class AbstractResourcePersistence extends AbstractPersistence {
     protected final Filer filer;
 
-    protected AbstractResourcePersistence(Filer filer, String name, Logger logger, String path) {
+    public AbstractResourcePersistence(Filer filer, String name, Logger logger, String path) {
         super(name, logger, path);
         this.filer = filer;
     }
@@ -47,19 +47,24 @@ public abstract class AbstractResourcePersistence extends AbstractPersistence {
         FileObject resource;
         try {
             resource = getResourceFile("locator");
-        } catch (FileNotFoundException | IllegalArgumentException e) {
-            // IllegalArgumentException happens when the path is invalid. For instance absolute or relative to a path
-            // not part of the class output folder.
-            // Due to a bug in javac for Linux, this also occurs when no output path is specified
-            // for javac using the -d parameter.
-            // See http://forums.sun.com/thread.jspa?threadID=5240999&tstart=45
-            // and http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6647996
+        } catch (FileNotFoundException e) {
+            // Could happen
             return null;
         } catch (IOException e) {
             logger.note(LogLocation.MESSAGER, "IOException while determining output location: " + e.getMessage());
             return null;
-        }
+        } catch (IllegalArgumentException e) {
+            // Happens when the path is invalid. For instance absolute or relative to a path
+            // not part of the class output folder.
+            //
+            // Due to a bug in javac for Linux, this also occurs when no output path is specified
+            // for javac using the -d parameter.
+            // See http://forums.sun.com/thread.jspa?threadID=5240999&tstart=45
+            // and http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6647996
 
+//			logger.toConsole("IllegalArgumentException: " + e.getMessage());
+            return null;
+        }
 
         URI uri = resource.toUri();
         if (uri.isAbsolute()) {
@@ -83,6 +88,7 @@ public abstract class AbstractResourcePersistence extends AbstractPersistence {
 
     @Override
     protected Writer createWriter(String name) throws IOException {
-        return createResourceFile(name).openWriter();
+        FileObject output = createResourceFile(name);
+        return output.openWriter();
     }
 }

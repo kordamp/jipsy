@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author Andres Almiray
  */
-public final class TypeLoader {
+public class TypeLoader {
     private static final Logger LOG = LoggerFactory.getLogger(TypeLoader.class);
     private static final String HASH = "#";
 
@@ -54,19 +54,18 @@ public final class TypeLoader {
         requireNonNull(type, "Argument 'type' must not be null");
         requireNonNull(processor, "Argument 'processor' must not be null");
         // "The name of a resource is a /-separated path name that identifies the resource."
-        final String normalizedPath = path.endsWith("/") ? path : path + "/";
+        String normalizedPath = path.endsWith("/") ? path : path + "/";
 
-        final Enumeration<URL> urls;
+        Enumeration<URL> urls;
 
         try {
             urls = classLoader.getResources(normalizedPath + type.getName());
-            if (urls == null) {
-                return false;
-            }
         } catch (IOException ioe) {
             LOG.error(ioe.getClass().getName() + " error loading resources of type \"" + type.getName() + "\" from \"" + normalizedPath + "\".");
             return false;
         }
+
+        if (urls == null) { return false; }
 
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
@@ -75,9 +74,7 @@ public final class TypeLoader {
             try (Scanner scanner = new Scanner(url.openStream())) {
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
-                    if (line.startsWith(HASH) || isBlank(line)) {
-                        continue;
-                    }
+                    if (line.startsWith(HASH) || isBlank(line)) { continue; }
                     processor.process(classLoader, type, line);
                 }
             } catch (IOException e) {
@@ -103,9 +100,7 @@ public final class TypeLoader {
             return false;
         }
 
-        if (urls == null) {
-            return false;
-        }
+        if (urls == null) { return false; }
 
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
@@ -127,19 +122,17 @@ public final class TypeLoader {
 
     private static void handleFileResource(URL url, ClassLoader classLoader, String path, PathFilter pathFilter, ResourceProcessor processor) {
         try {
-            File[] files = new File(url.toURI()).listFiles();
-            if( files != null ) {
-                for (File entry : files) {
-                    if (pathFilter.accept(entry.getName())) {
-                        try (Scanner scanner = new Scanner(entry)) {
-                            while (scanner.hasNextLine()) {
-                                String line = scanner.nextLine();
-                                if (line.startsWith(HASH) || isBlank(line)) { continue; }
-                                processor.process(classLoader, line);
-                            }
-                        } catch (IOException e) {
-                            LOG.warn("An error occurred while loading resources from " + entry.getAbsolutePath(), e);
+            File file = new File(url.toURI());
+            for (File entry : file.listFiles()) {
+                if (pathFilter.accept(entry.getName())) {
+                    try (Scanner scanner = new Scanner(entry)) {
+                        while (scanner.hasNextLine()) {
+                            String line = scanner.nextLine();
+                            if (line.startsWith(HASH) || isBlank(line)) { continue; }
+                            processor.process(classLoader, line);
                         }
+                    } catch (IOException e) {
+                        LOG.warn("An error occurred while loading resources from " + entry.getAbsolutePath(), e);
                     }
                 }
             }
@@ -175,17 +168,14 @@ public final class TypeLoader {
         }
     }
 
-    @FunctionalInterface
     public interface PathFilter {
         boolean accept(String path);
     }
 
-    @FunctionalInterface
     public interface LineProcessor {
         void process(ClassLoader classLoader, Class<?> type, String line);
     }
 
-    @FunctionalInterface
     public interface ResourceProcessor {
         void process(ClassLoader classLoader, String line);
     }
@@ -203,9 +193,10 @@ public final class TypeLoader {
         return true;
     }
 
-    private static void requireNonBlank(String str, String message) {
+    private static String requireNonBlank(String str, String message) {
         if (isBlank(str)) {
             throw new IllegalArgumentException(message);
         }
+        return str;
     }
 }

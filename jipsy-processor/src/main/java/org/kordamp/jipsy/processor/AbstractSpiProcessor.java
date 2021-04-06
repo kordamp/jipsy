@@ -22,27 +22,18 @@ import org.kordamp.jipsy.processor.service.ServiceProviderProcessor;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.Name;
-import javax.lang.model.element.QualifiedNameable;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic.Kind;
+import javax.tools.Diagnostic;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.Set;
-import java.util.regex.Matcher;
+import java.util.*;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 /**
  * @author Andres Almiray
@@ -51,11 +42,6 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
     protected static final Pattern RELEASE_PATTERN = Pattern.compile("^RELEASE_(\\d+)$");
     protected Options options;
     protected Logger logger;
-    private static final int MAX_SUPPORTED_VERSION = 8;
-
-    protected abstract Persistence getPersistence();
-
-    protected abstract <T extends ProvidedCollector> T getData();
 
     @Override
     public synchronized void init(ProcessingEnvironment environment) {
@@ -64,23 +50,8 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
         try {
             initialize();
         } catch (Exception e) {
-            environment.getMessager().printMessage(Kind.ERROR, ProcessorLogger.exceptionToString(e));
+            environment.getMessager().printMessage(Diagnostic.Kind.ERROR, ProcessorLogger.exceptionToString(e));
         }
-    }
-
-    @Override
-    public SourceVersion getSupportedSourceVersion() {
-        SourceVersion[] svs = SourceVersion.values();
-        for (int i = svs.length - 1; i >= 0; i--) {
-            String name = svs[i].name();
-            Matcher m = RELEASE_PATTERN.matcher(name);
-            if (m.matches()) {
-                int release = Integer.parseInt(m.group(1));
-                if (release <= MAX_SUPPORTED_VERSION) return svs[i];
-            }
-        }
-
-        return SourceVersion.RELEASE_6;
     }
 
     @Override
@@ -106,104 +77,18 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
 
     protected abstract Class<? extends Annotation> getAnnotationClass();
 
-    protected abstract Stream<AnnotationValue> enrich(Stream<? extends AnnotationMirror> poor);
+    protected abstract void handleElement(Element e);
 
-    protected abstract CheckResult checkCurrentClass(Element currentClass);
+    protected abstract void removeStaleData(RoundEnvironment roundEnv);
 
-    /**
-     * Register the provider implementing the interface {@code name} into the collection of services and their
-     * implementations.
-     *
-     * @param name     the name of the service this provider implements
-     * @param provider the provider that implements the interface
-     */
-
-    private void register(String name, TypeElement provider) {
-        getData().get(name).addProvider(createProperQualifiedName(provider));
-    }
-
-    protected void handleElement(Element e) {
-        CheckResult checkResult = checkCurrentClass(e);
-        if (checkResult.isError()) {
-            reportError(e, checkResult);
-            return;
-        }
-        TypeElement te = (TypeElement) e;
-
-        enrich(findAnnotationMirrors(te, getAnnotationClass().getName()))
-            .map(AbstractSpiProcessor::toElement)
-            .filter(type -> {
-                    CheckResult implementationResult = isImplementation(te, type);
-                    return !(implementationResult.isError() && reportError(te, implementationResult));
-                }
-            )
-            .map(this::createProperQualifiedName)
-            .forEach(name -> register(name, te));
-    }
-
-    private void removeStaleData(RoundEnvironment roundEnv) {
-        roundEnv.getRootElements().stream()
-            .filter(e -> e instanceof TypeElement)
-            .map(e -> (TypeElement) e)
-            .map(this::createProperQualifiedName)
-            .forEach(getData()::removeProvider);
-    }
-
-    private void writeData() {
-        if (getData().isModified()) {
-            logger.note(LogLocation.LOG_FILE, "Writing output");
-            if (getData().values().isEmpty()) {
-                try {
-                    getPersistence().delete();
-                } catch (IOException e) {
-                    logger.warning(LogLocation.LOG_FILE, "An error occurred while deleting data file");
-                }
-            } else {
-                for (Provided type : getData().values()) {
-                    try {
-                        getPersistence().write(type.getName(), type.toProviderNamesList());
-                    } catch (IOException e) {
-                        processingEnv.getMessager().printMessage(Kind.ERROR, e.getMessage());
-                    }
-                }
-                getPersistence().writeLog();
-            }
-        }
-    }
-
-    protected void initializeIfPossible(ProvidedCollector data, Persistence persistence) {
-        persistence.tryFind().forEach(data::get);
-        data.cache();
-    }
-
+    protected abstract void writeData();
     /**
      * Send a non-mandatory warning message to the service output-
      *
      * @param message the warning message to be printed
      */
-    private void reportWarning(String message) {
-        processingEnv.getMessager().printMessage(Kind.WARNING, message);
-    }
-
-    /**
-     * Send a mandatory warning message to the service output-
-     *
-     * @param message the warning message to be printed
-     */
-    private void reportMandatoryWarning(String message) {
-        processingEnv.getMessager().printMessage(Kind.WARNING, message);
-    }
-
-    /**
-     * Report an error on a given element.
-     *
-     * @param element the element that the report is about
-     * @param result the error message holding {@link CheckResult}
-     * @return {@code true}
-     */
-    protected boolean reportError(Element element, CheckResult result) {
-        processingEnv.getMessager().printMessage(Kind.ERROR, element.getSimpleName() + " " + result.getMessage(), element);
-        return true;
+    protected void warning(String message) {
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING, message);
     }
 
     /**
@@ -228,12 +113,12 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
     /**
      * Perform some compatibility checks and print some warning in case there is some issue.
      */
-    private void checkCompatibility() {
+    protected void checkCompatibility() {
         logger.note(LogLocation.MESSAGER, "Testing for compatibility options");
         try {
             checkJavacOnLinux();
         } catch (Exception e) {
-            reportWarning(ProcessorLogger.exceptionToString(e));
+            warning(ProcessorLogger.exceptionToString(e));
         }
         logger.note(LogLocation.MESSAGER, "Testing complete");
     }
@@ -246,28 +131,36 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
      * <p>
      * If there is an exception during the test, then it is also printed.
      */
-    private void checkJavacOnLinux() {
+    protected void checkJavacOnLinux() {
         try {
             FileObject resource = processingEnv.getFiler().getResource(StandardLocation.CLASS_OUTPUT, "", options.dir() + "a/b");
-            if ("b".equals(resource.toUri().toString())) {
-                reportMandatoryWarning("Output files will be placed in the root of the output folder.\n" +
-                    "  This is a known bug in the java compiler on Linux.\n" +
-                    "  Please use the -d compiler option to circumvent this problem.\n" +
-                    "  See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6647996 for more information.");
+            if (resource.toUri().toString().equals("b")) {
+                warning("Output files will be placed in the root of the output folder.\n  This is a known bug in the java compiler on Linux.\n  Please use the -d compiler option to circumvent this problem.\n  See http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6647996 for more information.");
             }
         } catch (IOException e) {
-            reportWarning("IOException during testing Javac on Linux");
+            warning("IOException during testing Javac on Linux");
         }
     }
 
-    /**
-     * Get all the elements, which are annotated by the type returned by {@link #getAnnotationClass()} implemented in
-     * the subclass of this abstract class and execute the {@link #handleElement(Element)} for them.
-     *
-     * @param roundEnv the execution processor environment for the actual round
-     */
-    private void handleAnnotations(RoundEnvironment roundEnv) {
-        roundEnv.getElementsAnnotatedWith(getAnnotationClass()).forEach(this::handleElement);
+    protected void handleAnnotations(RoundEnvironment roundEnv) {
+        Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(getAnnotationClass());
+        for (Element e : elements) {
+            handleElement(e);
+        }
+    }
+
+    protected void reportError(TypeElement element, CheckResult result) {
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, element.getSimpleName() + " " + result.getMessage(), element);
+    }
+
+    protected boolean hasPublicNoArgsConstructor(TypeElement currentClass) {
+        List<ExecutableElement> constructors = ElementFilter.constructorsIn(currentClass.getEnclosedElements());
+        for (ExecutableElement constructor : constructors) {
+            if (hasModifier(constructor, Modifier.PUBLIC) && constructor.getParameters().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected boolean hasModifier(Element element, Modifier modifier) {
@@ -285,7 +178,7 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
      * @param element the (class) element to check
      * @return true if the class is top level, or static inner class
      */
-    protected boolean isStaticClass(Element element) {
+    protected boolean isStaticClass(TypeElement element) {
         return element.getEnclosingElement().getKind() != ElementKind.CLASS ||
             hasModifier(element, Modifier.STATIC);
     }
@@ -296,8 +189,9 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
      * @param element the class that we need to check for being abstract
      * @return {@code true} if the class is an abstract class
      */
-    protected boolean isAbstractClass(Element element) {
-        return hasModifier(element, Modifier.ABSTRACT);
+    protected boolean isAbstractClass(TypeElement element) {
+        return element.getEnclosingElement().getKind() == ElementKind.CLASS &&
+            hasModifier(element, Modifier.ABSTRACT);
     }
 
     /**
@@ -313,7 +207,12 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
             return CheckResult.OK;
         }
 
-        final String message = "does not " + (type.getKind() == ElementKind.INTERFACE ? "implement" : "extend");
+        String message;
+        if (type.getKind() == ElementKind.INTERFACE) {
+            message = "does not implement";
+        } else {
+            message = "does not extend";
+        }
         return CheckResult.valueOf(message + " " + type.getQualifiedName());
     }
 
@@ -325,10 +224,39 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
      * @param type         the service interface type
      * @return {@code true} if the class implements the interface otherwise {@code false}
      */
-    private boolean isAssignable(TypeMirror currentClass, TypeMirror type) {
+    protected boolean isAssignable(TypeMirror currentClass, TypeMirror type) {
         Types typeUtils = processingEnv.getTypeUtils();
-        return typeUtils.isAssignable(typeUtils.erasure(currentClass), typeUtils.erasure(type)) ||
-            typeUtils.directSupertypes(currentClass).stream().anyMatch(superType -> isAssignable(superType, type));
+        if (typeUtils.isAssignable(typeUtils.erasure(currentClass), typeUtils.erasure(type))) {
+            return true;
+        }
+
+        for (TypeMirror superType : typeUtils.directSupertypes(currentClass)) {
+            if (isAssignable(superType, type)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected AnnotationValue findSingleValueMember(AnnotationMirror mirror, String memberName) {
+        Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = mirror.getElementValues();
+        for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : elementValues.entrySet()) {
+            if (entry.getKey().getSimpleName().contentEquals(memberName)) {
+                return entry.getValue();
+            }
+        }
+        throw new IllegalStateException("No value found in element");
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Collection<AnnotationValue> findCollectionValueMember(AnnotationMirror mirror, String memberName) {
+        Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = mirror.getElementValues();
+        for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : elementValues.entrySet()) {
+            if (entry.getKey().getSimpleName().contentEquals(memberName)) {
+                return (Collection<AnnotationValue>) entry.getValue().getValue();
+            }
+        }
+        throw new IllegalStateException("No value found in element");
     }
 
     /**
@@ -344,9 +272,14 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
         return processingEnv.getElementUtils().getBinaryName(type).toString();
     }
 
-    protected static Stream<? extends AnnotationMirror> findAnnotationMirrors(TypeElement element, String lookingFor) {
-        return element.getAnnotationMirrors().stream()
-            .filter(annotation -> annotationMirrorMatches(annotation, lookingFor));
+    protected static List<AnnotationMirror> findAnnotationMirrors(TypeElement element, String lookingFor) {
+        List<AnnotationMirror> annotationMirrors = new ArrayList<AnnotationMirror>();
+        for (AnnotationMirror annotation : element.getAnnotationMirrors()) {
+            if (annotationMirrorMatches(annotation, lookingFor)) {
+                annotationMirrors.add(annotation);
+            }
+        }
+        return annotationMirrors;
     }
 
     /**
@@ -355,11 +288,11 @@ public abstract class AbstractSpiProcessor extends AbstractProcessor {
      * @return {@code true} if the {@code annotation} has the name we are {@code lookingFor}.
      */
     protected static boolean annotationMirrorMatches(AnnotationMirror annotation, String lookingFor) {
-        Name qualifiedName = ((QualifiedNameable) (annotation.getAnnotationType()).asElement()).getQualifiedName();
+        Name qualifiedName = ((TypeElement) (annotation.getAnnotationType()).asElement()).getQualifiedName();
         return qualifiedName.contentEquals(lookingFor);
     }
 
     protected static TypeElement toElement(AnnotationValue value) {
-        return (TypeElement) ((DeclaredType) (value.getValue())).asElement();
+        return (TypeElement) ((DeclaredType) ((TypeMirror) value.getValue())).asElement();
     }
 }

@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * @author Andres Almiray
  */
-public final class TypeCollector implements ProvidedCollector {
+public final class TypeCollector {
     private final Map<String, Type> types = new LinkedHashMap<>();
     private final Map<String, Type> cached = new LinkedHashMap<>();
 
@@ -66,8 +66,7 @@ public final class TypeCollector implements ProvidedCollector {
         return false;
     }
 
-    @Override
-    public Type get(String type) {
+    public Type getType(String type) {
         if (type == null) {
             throw new NullPointerException("type");
         }
@@ -85,8 +84,7 @@ public final class TypeCollector implements ProvidedCollector {
         return types.get(type);
     }
 
-    @Override
-    public Collection<Type> values() {
+    public Collection<Type> types() {
         return Collections.unmodifiableMap(types).values();
     }
 

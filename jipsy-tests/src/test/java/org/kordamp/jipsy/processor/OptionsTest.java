@@ -54,7 +54,7 @@ import static junit.framework.Assert.assertTrue;
 
 public class OptionsTest extends NoOutputTestBase {
 
-    private final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    private JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
     @Test
     public void testDisabledDefault() {

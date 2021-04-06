@@ -48,7 +48,6 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class CollectorTest extends NoOutputTestBase {
@@ -59,7 +58,7 @@ public class CollectorTest extends NoOutputTestBase {
 
     @Before
     public void loadFrameWork() {
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<String, String>();
         map.put("service1", "provider1\n");
         map.put("service2", "provider1\nprovider2\n");
         map.put("service3", "provider1\nprovider3\n");
@@ -70,77 +69,77 @@ public class CollectorTest extends NoOutputTestBase {
 
     @Test(expected = NullPointerException.class)
     public void testGetServiceNull() {
-        collector.get(null);
+        collector.getService(null);
     }
 
     @Test
     public void testGetServiceExisting() {
-        assertEquals(0, collector.values().size());
-        collector.get("service");
-        assertEquals(1, collector.values().size());
+        assertEquals(0, collector.services().size());
+        collector.getService("service");
+        assertEquals(1, collector.services().size());
         logger.reset();
-        Service service = collector.get("service");
+        Service service = collector.getService("service");
         assertTrue(logger.records().isEmpty());
         assertEquals("service", service.getName());
-        assertEquals(1, collector.values().size());
+        assertEquals(1, collector.services().size());
     }
 
     @Test
     public void testGetServiceNew() {
-        assertEquals(0, collector.values().size());
+        assertEquals(0, collector.services().size());
         logger.reset();
-        assertEquals("service", collector.get("service").getName());
+        assertEquals("service", collector.getService("service").getName());
         assertEquals(1, logger.records().size());
-        assertEquals(1, collector.values().size());
+        assertEquals(1, collector.services().size());
     }
 
     @Test
     public void testGetServiceNewWithInitializer() {
-        assertEquals(0, collector.values().size());
-        Service service = collector.get("service1");
+        assertEquals(0, collector.services().size());
+        Service service = collector.getService("service1");
         assertEquals("service1", service.getName());
         assertTrue(service.contains("provider1"));
-        assertEquals(1, collector.values().size());
+        assertEquals(1, collector.services().size());
     }
 
     @Test
     public void testGetServiceNewWithBiggerInitializer() {
-        assertEquals(0, collector.values().size());
-        Service service = collector.get("service2");
+        assertEquals(0, collector.services().size());
+        Service service = collector.getService("service2");
         assertEquals("service2", service.getName());
         assertTrue(service.contains("provider1"));
         assertTrue(service.contains("provider2"));
-        assertEquals(1, collector.values().size());
+        assertEquals(1, collector.services().size());
     }
 
     @Test
     public void testGetServiceNewWithInitializerContainingRemovedElement() {
-        assertEquals(0, collector.values().size());
+        assertEquals(0, collector.services().size());
         collector.removeProvider("provider1");
-        Service service = collector.get("service1");
+        Service service = collector.getService("service1");
         Assert.assertFalse(service.contains("provider1"));
-        assertEquals(1, collector.values().size());
+        assertEquals(1, collector.services().size());
     }
 
     @Test
     public void testServicesEmpty() {
-        Collection<Service> services = collector.values();
+        Collection<Service> services = collector.services();
         assertEquals(0, services.size());
     }
 
     @Test
     public void testServicesOne() {
-        Service service = collector.get("service");
-        Collection<Service> services = collector.values();
+        Service service = collector.getService("service");
+        Collection<Service> services = collector.services();
         assertEquals(1, services.size());
         assertTrue(services.contains(service));
     }
 
     @Test
     public void testServicesMore() {
-        Service service1 = collector.get("service1");
-        Service service2 = collector.get("service2");
-        Collection<Service> services = collector.values();
+        Service service1 = collector.getService("service1");
+        Service service2 = collector.getService("service2");
+        Collection<Service> services = collector.services();
         assertEquals(2, services.size());
         assertTrue(services.contains(service1));
         assertTrue(services.contains(service2));
@@ -148,10 +147,10 @@ public class CollectorTest extends NoOutputTestBase {
 
     @Test
     public void testServicesDuplicate() {
-        Service service1 = collector.get("service1");
-        Service service2 = collector.get("service1");
-        assertSame(service1, service2);
-        Collection<Service> services = collector.values();
+        Service service1 = collector.getService("service1");
+        Service service2 = collector.getService("service1");
+        assertTrue(service1 == service2);
+        Collection<Service> services = collector.services();
         assertEquals(1, services.size());
         assertTrue(services.contains(service1));
     }
@@ -170,7 +169,7 @@ public class CollectorTest extends NoOutputTestBase {
 
     @Test
     public void testRemoveProviderWhenInNotOneService() {
-        collector.get("service1");
+        collector.getService("service1");
         logger.reset();
         collector.removeProvider("provider2");
         assertEquals(1, logger.records().size());
@@ -178,7 +177,7 @@ public class CollectorTest extends NoOutputTestBase {
 
     @Test
     public void testRemoveProviderWhenInOneService() {
-        collector.get("service1");
+        collector.getService("service1");
         logger.reset();
         collector.removeProvider("provider1");
         assertEquals(2, logger.records().size());
@@ -186,8 +185,8 @@ public class CollectorTest extends NoOutputTestBase {
 
     @Test
     public void testRemoveProviderWhenInTwoServices() {
-        collector.get("service1");
-        collector.get("service2");
+        collector.getService("service1");
+        collector.getService("service2");
         logger.reset();
         collector.removeProvider("provider1");
         assertEquals(3, logger.records().size());
@@ -195,9 +194,9 @@ public class CollectorTest extends NoOutputTestBase {
 
     @Test
     public void testRemoveProviderWhenInSomeServices() {
-        collector.get("service1");
-        collector.get("service2");
-        collector.get("service3");
+        collector.getService("service1");
+        collector.getService("service2");
+        collector.getService("service3");
         logger.reset();
         collector.removeProvider("provider2");
         assertEquals(2, logger.records().size());
@@ -210,20 +209,20 @@ public class CollectorTest extends NoOutputTestBase {
 
     @Test
     public void testToStringNonExistingService() {
-        collector.get("nonExistingService");
+        collector.getService("nonExistingService");
         collector.toString();
     }
 
     @Test
     public void testToStringExistingService() {
-        collector.get("service1");
+        collector.getService("service1");
         collector.toString();
     }
 
     @Test
     public void testToStringMoreExistingServices() {
-        collector.get("service1");
-        collector.get("service2");
+        collector.getService("service1");
+        collector.getService("service2");
         collector.toString();
     }
 }

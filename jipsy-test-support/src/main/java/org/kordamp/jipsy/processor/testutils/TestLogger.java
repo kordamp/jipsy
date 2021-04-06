@@ -45,7 +45,7 @@ import java.util.List;
 
 public class TestLogger implements Logger {
 
-    private final List<TestLogger.Record> records = new ArrayList<>();
+    private final List<TestLogger.Record> records = new ArrayList<TestLogger.Record>();
 
     @Override
     public String getFileContent() {

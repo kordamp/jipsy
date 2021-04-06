@@ -37,11 +37,18 @@ package org.kordamp.jipsy.processor.service;
 
 import org.kordamp.jipsy.processor.AbstractResourcePersistence;
 import org.kordamp.jipsy.processor.Logger;
+import org.kordamp.jipsy.processor.SimpleFileFilter;
 
 import javax.annotation.processing.Filer;
+import java.io.FileFilter;
 
 public class ServicePersistence extends AbstractResourcePersistence {
     public ServicePersistence(String name, String root, Filer filer, Logger logger) {
         super(filer, name, logger, root + "META-INF/services/");
+    }
+
+    @Override
+    protected FileFilter getFileFilter() {
+        return SimpleFileFilter.INSTANCE;
     }
 }

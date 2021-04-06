@@ -45,7 +45,7 @@ import java.util.List;
 
 public class TestDiagnosticListener implements DiagnosticListener<JavaFileObject> {
 
-    private final List<Diagnostic<JavaFileObject>> diagnostics = new ArrayList<>();
+    private final List<Diagnostic<JavaFileObject>> diagnostics = new ArrayList<Diagnostic<JavaFileObject>>();
 
     @Override
     public void report(Diagnostic<? extends JavaFileObject> diagnostic) {

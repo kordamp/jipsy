@@ -20,6 +20,7 @@ package org.kordamp.jipsy.processor;
 import javax.annotation.processing.Filer;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -38,7 +39,7 @@ public abstract class AbstractResourceInitializer implements Initializer {
     protected final String path;
     protected final Logger logger;
 
-    protected AbstractResourceInitializer(Logger logger, String path, Filer filer) {
+    public AbstractResourceInitializer(Logger logger, String path, Filer filer) {
         this.logger = logger;
         this.path = path;
         this.filer = filer;
@@ -49,11 +50,12 @@ public abstract class AbstractResourceInitializer implements Initializer {
         try {
             FileObject resource = filer.getResource(StandardLocation.CLASS_OUTPUT, "", path + name);
 
+            CharSequence result;
             try {
                 // Eclipse can't handle the getCharContent
                 // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=246089
                 // 2008-09-12 RoelS: I've posted a patch file
-                return resource.getCharContent(true);
+                result = tryWithReader(resource);
             } catch (FileNotFoundException e) {
                 // Could happen
                 return null;
@@ -64,7 +66,7 @@ public abstract class AbstractResourceInitializer implements Initializer {
                 try {
                     // Javac can't handle the openReader
                     // Filed as a bug at bugs.sun.com and received a review ID: 1339738
-                    return resource.getCharContent(true);
+                    result = resource.getCharContent(true);
                 } catch (FileNotFoundException e) {
                     // Could happen
                     return null;
@@ -73,9 +75,24 @@ public abstract class AbstractResourceInitializer implements Initializer {
                     return null;
                 }
             }
+            return result;
         } catch (IOException e) {
             logger.note(LogLocation.MESSAGER, "getResource gave an IOException: " + e.getMessage());
         }
         return null;
+    }
+
+    protected CharSequence tryWithReader(FileObject resource) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader reader = new BufferedReader(resource.openReader(true));
+        try {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+        } finally {
+            reader.close();
+        }
+        return sb;
     }
 }

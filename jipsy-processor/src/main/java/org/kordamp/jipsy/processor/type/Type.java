@@ -17,8 +17,14 @@
  */
 package org.kordamp.jipsy.processor.type;
 
+import org.kordamp.jipsy.processor.LogLocation;
 import org.kordamp.jipsy.processor.Logger;
-import org.kordamp.jipsy.processor.Provided;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Textual representation of a type interface and the classes implementing it. The class maintains the name of the
@@ -28,7 +34,10 @@ import org.kordamp.jipsy.processor.Provided;
  * The class is mutable and provides methods to add, remove providers to the service.
  * @author Andres Almiray
  */
-public final class Type extends Provided {
+public final class Type {
+    private final Logger logger;
+    private final String typeName;
+    private final Set<String> providers = new LinkedHashSet<>();
 
     /**
      * Create a new type object.
@@ -38,6 +47,69 @@ public final class Type extends Provided {
      *               {@link #getName()} and it is also used in {@link #equals(Object)}.
      */
     public Type(Logger logger, String name) {
-        super(logger,name);
+        if (logger == null) {
+            throw new NullPointerException("logger");
+        }
+        if (name == null) {
+            throw new NullPointerException("name");
+        }
+        this.logger = logger;
+        logger.note(LogLocation.LOG_FILE, "Creating " + name);
+        this.typeName = name;
+    }
+
+    public void addProvider(String provider) {
+        if (provider == null) {
+            throw new NullPointerException("provider");
+        }
+        logger.note(LogLocation.LOG_FILE, "Adding " + provider + " to " + typeName);
+        providers.add(provider);
+    }
+
+    public boolean contains(String provider) {
+        return providers.contains(provider);
+    }
+
+    public boolean removeProvider(String provider) {
+        if (providers.remove(provider)) {
+            logger.note(LogLocation.LOG_FILE, "Removing " + provider + " from " + typeName);
+            return true;
+        }
+        return false;
+    }
+
+    public String getName() {
+        return typeName;
+    }
+
+    public String toProviderNamesList() {
+        StringBuilder sb = new StringBuilder();
+        List<String> names = new ArrayList<>(providers);
+        Collections.sort(names);
+        for (String provider : names) {
+            sb.append(provider).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public void fromProviderNamesList(String input) {
+        if (input == null) {
+            throw new NullPointerException("input");
+        }
+        String[] lines = input.split("\\n");
+        for (String line : lines) {
+            String[] content = line.split("#");
+            if (content.length > 0) {
+                String trimmed = content[0].trim();
+                if (trimmed.length() > 0) {
+                    addProvider(trimmed);
+                }
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return typeName + "=" + providers;
     }
 }

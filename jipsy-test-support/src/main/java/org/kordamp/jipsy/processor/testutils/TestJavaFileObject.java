@@ -38,6 +38,7 @@ package org.kordamp.jipsy.processor.testutils;
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -59,7 +60,7 @@ public final class TestJavaFileObject extends SimpleJavaFileObject {
     }
 
     @Override
-    public CharSequence getCharContent(boolean ignoreEncodingErrors) {
+    public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
         return programText;
     }
 

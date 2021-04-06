@@ -35,8 +35,10 @@ limitations under the License.
 
 package org.kordamp.jipsy.processor.service;
 
+import org.kordamp.jipsy.processor.LogLocation;
 import org.kordamp.jipsy.processor.Logger;
-import org.kordamp.jipsy.processor.Provided;
+
+import java.util.*;
 
 /**
  * Textual representation of a service interface and the classes implementing it. The class maintains the name of the
@@ -46,7 +48,10 @@ import org.kordamp.jipsy.processor.Provided;
  * The class is mutable and provides methods to add, remove providers to the service.
  * @author Andres Almiray
  */
-public final class Service extends Provided {
+public final class Service {
+    private final Logger logger;
+    private final String serviceName;
+    private final Set<String> providers = new HashSet<String>();
 
     /**
      * Create a new service object.
@@ -56,6 +61,87 @@ public final class Service extends Provided {
      *               {@link #getName()} and it is also used in {@link #equals(Object)}.
      */
     public Service(Logger logger, String name) {
-        super(logger, name);
+        if (logger == null) {
+            throw new NullPointerException("logger");
+        }
+        if (name == null) {
+            throw new NullPointerException("name");
+        }
+        this.logger = logger;
+        logger.note(LogLocation.LOG_FILE, "Creating " + name);
+        this.serviceName = name;
+    }
+
+    public void addProvider(String provider) {
+        if (provider == null) {
+            throw new NullPointerException("provider");
+        }
+        logger.note(LogLocation.LOG_FILE, "Adding " + provider + " to " + serviceName);
+        providers.add(provider);
+    }
+
+    public boolean contains(String provider) {
+        return providers.contains(provider);
+    }
+
+    public boolean removeProvider(String provider) {
+        if (providers.remove(provider)) {
+            logger.note(LogLocation.LOG_FILE, "Removing " + provider + " from " + serviceName);
+            return true;
+        }
+        return false;
+    }
+
+    public String getName() {
+        return serviceName;
+    }
+
+    public String toProviderNamesList() {
+        StringBuilder sb = new StringBuilder();
+        List<String> names = new ArrayList<String>(providers);
+        Collections.sort(names);
+        for (String provider : names) {
+            sb.append(provider).append("\n");
+        }
+        return sb.toString();
+    }
+
+    public void fromProviderNamesList(String input) {
+        if (input == null) {
+            throw new NullPointerException("input");
+        }
+        String[] lines = input.split("\\n");
+        for (String line : lines) {
+            String[] content = line.split("#");
+            if (content.length > 0) {
+                String trimmed = content[0].trim();
+                if (trimmed.length() > 0) {
+                    addProvider(trimmed);
+                }
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return serviceName + "=" + providers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Service service = (Service) o;
+
+        return serviceName.equals(service.serviceName) &&
+            providers.containsAll(service.providers) && service.providers.containsAll(providers);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = serviceName.hashCode();
+        result = 31 * result + providers.hashCode();
+        return result;
     }
 }

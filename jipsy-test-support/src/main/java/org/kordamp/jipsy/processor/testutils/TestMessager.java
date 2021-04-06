@@ -45,7 +45,7 @@ import java.util.List;
 
 public class TestMessager implements Messager {
 
-    private final List<Message> messages = new ArrayList<>();
+    private final List<Message> messages = new ArrayList<Message>();
 
     @Override
     public void printMessage(Kind kind, CharSequence msg) {

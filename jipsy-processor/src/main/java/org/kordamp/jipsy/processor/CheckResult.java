@@ -35,8 +35,6 @@ limitations under the License.
 
 package org.kordamp.jipsy.processor;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Stores the result of a check.
  * <p>
@@ -65,7 +63,9 @@ public final class CheckResult {
      * @return the new result object
      */
     public static CheckResult valueOf(String message) {
-        requireNonNull(message, "message");
+        if (message == null) {
+            throw new NullPointerException("message");
+        }
         return new CheckResult(message);
     }
 

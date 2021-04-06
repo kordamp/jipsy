@@ -44,7 +44,7 @@ public final class ProcessorLogger implements Logger {
     private final Messager messager;
     private final Options options;
 
-    private final StringBuilder logContent = new StringBuilder();
+    private final StringBuffer logContent = new StringBuffer();
 
     public ProcessorLogger(Messager messager, Options options) {
         if (messager == null) {

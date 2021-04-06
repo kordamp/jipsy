@@ -48,10 +48,12 @@ public interface Persistence {
      */
     Collection<String> tryFind();
 
+    Collection<String> listDiscoveredFiles(File[] list);
+
     /**
      * Delete the file that should contain the resource.
      *
      * @throws IOException if the deletion of the resource is not possible for some reason
      */
-    void delete() throws IOException;
+    void delete() throws IOException ;
 }

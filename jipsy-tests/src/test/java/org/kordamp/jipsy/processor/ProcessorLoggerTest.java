@@ -51,14 +51,14 @@ public class ProcessorLoggerTest extends NoOutputTestBase {
     private static final String TEST_MESSAGE = "%%test message%%";
 
     private final TestMessager messager = new TestMessager();
-    private final Options optionsVerbose = new Options(null, Collections.singletonMap(Options.SPI_VERBOSE_OPTION, null));
-    private final Options optionsLog = new Options(null, Collections.singletonMap(Options.SPI_LOG_OPTION, null));
+    private final Options optionsVerbose = new Options(null, Collections.singletonMap(Options.SPI_VERBOSE_OPTION, (String) null));
+    private final Options optionsLog = new Options(null, Collections.singletonMap(Options.SPI_LOG_OPTION, (String) null));
     private final Options options = new Options(null, new HashMap<String, String>() {
         private static final long serialVersionUID = 1L;
 
         {
-            put(Options.SPI_LOG_OPTION, null);
-            put(Options.SPI_VERBOSE_OPTION, null);
+            put(Options.SPI_LOG_OPTION, (String) null);
+            put(Options.SPI_VERBOSE_OPTION, (String) null);
         }
     });
 
@@ -84,7 +84,7 @@ public class ProcessorLoggerTest extends NoOutputTestBase {
 
     @Test
     public void testProcessLoggerOptionsWithWarnings() {
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new HashMap<String, String>();
         map.put(Options.SPI_LOG_OPTION, "true");
         map.put(Options.SPI_VERBOSE_OPTION, "true");
         map.put(Options.SPI_DISABLED_OPTION, "yes");
