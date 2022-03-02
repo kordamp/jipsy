@@ -24,12 +24,12 @@
     <parent>
         <groupId>org.kordamp.maven</groupId>
         <artifactId>kordamp-parent</artifactId>
-        <version>1.2.0</version>
+        <version>1.3.0</version>
     </parent>
 
     <groupId>org.kordamp.jipsy</groupId>
     <artifactId>jipsy-parent</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -89,6 +89,9 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <configuration combine.self="override">
                     <header>${rootdir}/etc/license.txt</header>
+                    <headerDefinitions>
+                        <headerDefinition>${rootdir}/etc/header-definition.xml</headerDefinition>
+                    </headerDefinitions>
                     <strictCheck>true</strictCheck>
                     <properties>
                         <author>Andres Almiray</author>
@@ -101,6 +104,7 @@
                         <exclude>mvnw</exclude>
                         <exclude>mvnw.cmd</exclude>
                         <exclude>.mvn/wrapper/*</exclude>
+                        <exclude>out/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
