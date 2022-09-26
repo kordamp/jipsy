@@ -43,7 +43,7 @@ public final class Options {
     public static final String SPI_LOG_OPTION = "spi_log";
     public static final String SPI_VERBOSE_OPTION = "spi_verbose";
 
-    private final List<String> warnings = new ArrayList<String>();
+    private final List<String> warnings = new ArrayList<>();
 
     private final boolean disabled;
     private final boolean log;

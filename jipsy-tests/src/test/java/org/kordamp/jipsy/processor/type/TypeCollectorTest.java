@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 public class TypeCollectorTest extends NoOutputTestBase {
@@ -36,7 +37,7 @@ public class TypeCollectorTest extends NoOutputTestBase {
 
     @Before
     public void loadFrameWork() {
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<>();
         map.put("type1", "provider1\n");
         map.put("type2", "provider1\nprovider2\n");
         map.put("type3", "provider1\nprovider3\n");
@@ -47,77 +48,77 @@ public class TypeCollectorTest extends NoOutputTestBase {
 
     @Test(expected = NullPointerException.class)
     public void testGetTypeNull() {
-        collector.getType(null);
+        collector.get(null);
     }
 
     @Test
     public void testGetTypeExisting() {
-        assertEquals(0, collector.types().size());
-        collector.getType("type");
-        assertEquals(1, collector.types().size());
+        assertEquals(0, collector.values().size());
+        collector.get("type");
+        assertEquals(1, collector.values().size());
         logger.reset();
-        Type type = collector.getType("type");
+        Type type = collector.get("type");
         assertTrue(logger.records().isEmpty());
         assertEquals("type", type.getName());
-        assertEquals(1, collector.types().size());
+        assertEquals(1, collector.values().size());
     }
 
     @Test
     public void testGetTypeNew() {
-        assertEquals(0, collector.types().size());
+        assertEquals(0, collector.values().size());
         logger.reset();
-        assertEquals("type", collector.getType("type").getName());
+        assertEquals("type", collector.get("type").getName());
         assertEquals(1, logger.records().size());
-        assertEquals(1, collector.types().size());
+        assertEquals(1, collector.values().size());
     }
 
     @Test
     public void testGetTypeNewWithInitializer() {
-        assertEquals(0, collector.types().size());
-        Type type = collector.getType("type1");
+        assertEquals(0, collector.values().size());
+        Type type = collector.get("type1");
         assertEquals("type1", type.getName());
         assertTrue(type.contains("provider1"));
-        assertEquals(1, collector.types().size());
+        assertEquals(1, collector.values().size());
     }
 
     @Test
     public void testGetTypeNewWithBiggerInitializer() {
-        assertEquals(0, collector.types().size());
-        Type type = collector.getType("type2");
+        assertEquals(0, collector.values().size());
+        Type type = collector.get("type2");
         assertEquals("type2", type.getName());
         assertTrue(type.contains("provider1"));
         assertTrue(type.contains("provider2"));
-        assertEquals(1, collector.types().size());
+        assertEquals(1, collector.values().size());
     }
 
     @Test
     public void testGetTypeNewWithInitializerContainingRemovedElement() {
-        assertEquals(0, collector.types().size());
+        assertEquals(0, collector.values().size());
         collector.removeProvider("provider1");
-        Type type = collector.getType("type1");
+        Type type = collector.get("type1");
         Assert.assertFalse(type.contains("provider1"));
-        assertEquals(1, collector.types().size());
+        assertEquals(1, collector.values().size());
     }
 
     @Test
     public void testTypesEmpty() {
-        Collection<Type> types = collector.types();
+        Collection<Type> types = collector.values();
         assertEquals(0, types.size());
     }
 
     @Test
     public void testTypesOne() {
-        Type type = collector.getType("type");
-        Collection<Type> types = collector.types();
+        Type type = collector.get("type");
+        Collection<Type> types = collector.values();
         assertEquals(1, types.size());
         assertTrue(types.contains(type));
     }
 
     @Test
     public void testTypesMore() {
-        Type type1 = collector.getType("type1");
-        Type type2 = collector.getType("type2");
-        Collection<Type> types = collector.types();
+        Type type1 = collector.get("type1");
+        Type type2 = collector.get("type2");
+        Collection<Type> types = collector.values();
         assertEquals(2, types.size());
         assertTrue(types.contains(type1));
         assertTrue(types.contains(type2));
@@ -125,10 +126,10 @@ public class TypeCollectorTest extends NoOutputTestBase {
 
     @Test
     public void testTypesDuplicate() {
-        Type type1 = collector.getType("type1");
-        Type type2 = collector.getType("type1");
-        assertTrue(type1 == type2);
-        Collection<Type> types = collector.types();
+        Type type1 = collector.get("type1");
+        Type type2 = collector.get("type1");
+        assertSame(type1, type2);
+        Collection<Type> types = collector.values();
         assertEquals(1, types.size());
         assertTrue(types.contains(type1));
     }
@@ -147,7 +148,7 @@ public class TypeCollectorTest extends NoOutputTestBase {
 
     @Test
     public void testRemoveProviderWhenInNotOneType() {
-        collector.getType("type1");
+        collector.get("type1");
         logger.reset();
         collector.removeProvider("provider2");
         assertEquals(1, logger.records().size());
@@ -155,7 +156,7 @@ public class TypeCollectorTest extends NoOutputTestBase {
 
     @Test
     public void testRemoveProviderWhenInOneType() {
-        collector.getType("type1");
+        collector.get("type1");
         logger.reset();
         collector.removeProvider("provider1");
         assertEquals(2, logger.records().size());
@@ -163,8 +164,8 @@ public class TypeCollectorTest extends NoOutputTestBase {
 
     @Test
     public void testRemoveProviderWhenInTwoTypes() {
-        collector.getType("type1");
-        collector.getType("type2");
+        collector.get("type1");
+        collector.get("type2");
         logger.reset();
         collector.removeProvider("provider1");
         assertEquals(3, logger.records().size());
@@ -172,9 +173,9 @@ public class TypeCollectorTest extends NoOutputTestBase {
 
     @Test
     public void testRemoveProviderWhenInSomeTypes() {
-        collector.getType("type1");
-        collector.getType("type2");
-        collector.getType("type3");
+        collector.get("type1");
+        collector.get("type2");
+        collector.get("type3");
         logger.reset();
         collector.removeProvider("provider2");
         assertEquals(2, logger.records().size());
@@ -187,20 +188,20 @@ public class TypeCollectorTest extends NoOutputTestBase {
 
     @Test
     public void testToStringNonExistingType() {
-        collector.getType("nonExistingType");
+        collector.get("nonExistingType");
         collector.toString();
     }
 
     @Test
     public void testToStringExistingType() {
-        collector.getType("type1");
+        collector.get("type1");
         collector.toString();
     }
 
     @Test
     public void testToStringMoreExistingTypes() {
-        collector.getType("type1");
-        collector.getType("type2");
+        collector.get("type1");
+        collector.get("type2");
         collector.toString();
     }
 }

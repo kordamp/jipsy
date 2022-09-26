@@ -19,10 +19,8 @@ package org.kordamp.jipsy.processor.type;
 
 import org.kordamp.jipsy.processor.AbstractResourcePersistence;
 import org.kordamp.jipsy.processor.Logger;
-import org.kordamp.jipsy.processor.SimpleFileFilter;
 
 import javax.annotation.processing.Filer;
-import java.io.FileFilter;
 
 /**
  * @author Andres Almiray
@@ -30,10 +28,5 @@ import java.io.FileFilter;
 public class TypePersistence extends AbstractResourcePersistence {
     public TypePersistence(String name, String root, Filer filer, Logger logger) {
         super(filer, name, logger, root + "META-INF/types/");
-    }
-
-    @Override
-    protected FileFilter getFileFilter() {
-        return SimpleFileFilter.INSTANCE;
     }
 }

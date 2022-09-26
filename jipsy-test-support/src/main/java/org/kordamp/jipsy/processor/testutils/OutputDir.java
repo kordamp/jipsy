@@ -50,7 +50,7 @@ public final class OutputDir {
         String fileName = System.getProperty("spi.output.dir", "target/test-temp");
         File file = new File(fileName);
         if (!file.exists()) {
-            file.mkdir();
+            file.mkdirs();
             file.deleteOnExit();
         }
         if (file.exists() && file.isDirectory()) {
