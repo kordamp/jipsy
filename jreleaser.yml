@@ -22,7 +22,7 @@ project:
   longDescription: |
     Configurable Java Annotation Processor to simplify the use of the Service Provider Interface
   links:
-    homepage: https://kordamp.org/pomchecker
+    homepage: https://kordamp.org/jipsy
   authors:
     - Andres Almiray
   license: Apache-2.0

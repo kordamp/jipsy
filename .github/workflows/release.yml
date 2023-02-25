@@ -37,7 +37,7 @@ jobs:
 
       - name: Stage deploy
         run: |
-          ./mvnw -ntp -B --file pom.xml -Ppublication -DaltDeploymentRepository=local::file:target/staging-deploy \
+          ./mvnw -ntp -B --file pom.xml -Ppublication -Drelease=true -DaltDeploymentRepository=local::file:target/staging-deploy \
           -Dmaven.site.skip=true deploy
 
       - name: Release
@@ -60,7 +60,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: jreleaser-release
+          name: jipsy-release
           path: |
             out/jreleaser/trace.log
             out/jreleaser/output.properties

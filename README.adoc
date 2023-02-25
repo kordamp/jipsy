@@ -1,15 +1,16 @@
 = Jipsy
 :author: Andres Almiray
 :linkattrs:
-:project-owner:   kordamp
-:project-name:    jipsy
-:project-group:   org.kordamp.jipsy
-:project-version: 1.1.1
+:project-owner:      kordamp
+:project-name:       jipsy
+:project-groupId:    org.kordamp.jipsy
+:project-artifactId: jipsy-processor
+:project-version:    1.1.1
 
 image::media/jipsy-logo.png[]
 
-image:https://github.com/{project-owner}/{project-name}/workflows/Build/badge.svg["Build Status", link="https://github.com/{project-owner}/{project-name}/actions"]
-image:https://img.shields.io/maven-central/v/{project-group}/jipsy-processor.svg[Download, link="https://search.maven.org/search?q=jipsy-processor"]
+image:http://img.shields.io/github/actions/workflow/status/{project-owner}/{project-name}/early-access.yml?branch=master&logo=github&label=Build["Build Status", link="https://github.com/{project-owner}/{project-name}/actions"]
+image:https://img.shields.io/maven-central/v/{project-groupId}/{project-artifactId}.svg[Download, link="https://search.maven.org/#search|ga|1|g:{project-groupId} AND a:{project-artifactId}"]
 
 ---
 

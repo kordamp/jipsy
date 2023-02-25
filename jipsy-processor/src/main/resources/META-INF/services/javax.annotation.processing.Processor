@@ -1,2 +1,3 @@
 org.kordamp.jipsy.processor.service.ServiceProviderProcessor
+org.kordamp.jipsy.processor.sisu.SisuIndexProviderProcessor
 org.kordamp.jipsy.processor.type.TypeProviderProcessor
