@@ -7,44 +7,27 @@ on:
         description: 'Release version'
         required: true
 
-env:
-  JAVA_VERSION: '8'
-  JAVA_DISTRO: 'zulu'
-
 jobs:
   release:
-    name: Release
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Setup Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: ${{ env.JAVA_DISTRO }}
-          server-id: central
-          server-username: MAVEN_USERNAME
-          server-password: MAVEN_CENTRAL_TOKEN
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-
-      - name: Cache Maven
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          java-version: ${{ vars.JAVA_VERSION }}
+          distribution: ${{ vars.JAVA_DISTRO }}
+          cache: 'maven'
 
       - name: Version
         run: |
           VERSION=${{ github.event.inputs.version }}
           echo "Updating POMs to version $VERSION"
-          ./mvnw -B versions:set versions:commit -DnewVersion=$VERSION
+          ./mvnw -ntp -B versions:set versions:commit -DnewVersion=$VERSION
           echo $VERSION > VERSION
           sed -i -e "s/^\:project-version\:\ .*/:project-version: ${VERSION}/g" README.adoc
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -52,19 +35,13 @@ jobs:
           git commit -a -m "Releasing version $VERSION"
           git push origin master
 
-      - name: Release
-        env:
-          MAVEN_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          MAVEN_CENTRAL_TOKEN: ${{ secrets.SONATYPE_PASSWORD }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Stage deploy
         run: |
-          export GPG_TTY=$(tty)
-          ./mvnw --no-transfer-progress -B --file pom.xml \
-            -Drepository.url=https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git \
-            -Dmaven.site.skip=true -Drelease=true deploy
+          ./mvnw -ntp -B --file pom.xml -Ppublication -DaltDeploymentRepository=local::file:target/staging-deploy \
+          -Dmaven.site.skip=true deploy
 
       - name: Release
-        uses: jreleaser/release-action@v1
+        uses: jreleaser/release-action@v2
         env:
           JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.version }}
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GIT_ACCESS_TOKEN }}
@@ -75,10 +52,13 @@ jobs:
           JRELEASER_TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
           JRELEASER_TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           JRELEASER_TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+          JRELEASER_MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
+          JRELEASER_NEXUS2_MAVEN_CENTRAL_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          JRELEASER_NEXUS2_MAVEN_CENTRAL_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
 
       - name: JReleaser output
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jreleaser-release
           path: |

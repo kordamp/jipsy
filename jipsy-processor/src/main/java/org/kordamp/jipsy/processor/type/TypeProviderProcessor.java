@@ -49,7 +49,7 @@ public class TypeProviderProcessor extends AbstractSpiProcessor {
     public static final String NAME = TypeProviderProcessor.class.getName()
         + " (" + TypeProviderProcessor.class.getPackage().getImplementationVersion() + ")";
 
-    private static final int MAX_SUPPORTED_VERSION = 8;
+    private static final int MAX_SUPPORTED_VERSION = 21;
 
     private Persistence persistence;
     private TypeCollector data;

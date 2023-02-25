@@ -56,7 +56,7 @@ public class ServiceProviderProcessor extends AbstractSpiProcessor {
     public static final String NAME = ServiceProviderProcessor.class.getName()
         + " (" + ServiceProviderProcessor.class.getPackage().getImplementationVersion() + ")";
 
-    private static final int MAX_SUPPORTED_VERSION = 8;
+    private static final int MAX_SUPPORTED_VERSION = 21;
 
     private Persistence persistence;
     private ServiceCollector data;
