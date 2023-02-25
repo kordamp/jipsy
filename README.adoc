@@ -7,6 +7,14 @@
 :project-artifactId: jipsy-processor
 :project-version:    1.1.1
 
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
 image::media/jipsy-logo.png[]
 
 image:http://img.shields.io/github/actions/workflow/status/{project-owner}/{project-name}/early-access.yml?branch=master&logo=github&label=Build["Build Status", link="https://github.com/{project-owner}/{project-name}/actions"]
@@ -73,23 +81,23 @@ correctly.
 
 Jipsy can be downloaded directly from Maven Central, configure it via Maven or Gradle.
 
-.Maven
+**Maven**
 [subs="verbatim,attributes"]
 ----
 <dependency>
-    <groupId>{project-group}</groupId>
+    <groupId>{project-groupId}</groupId>
     <artifactId>{project-name}-processor</artifactId>
     <version>{project-version}</version>
     <scope>provided</scope>
 </dependency>
 ----
 
-.Gradle
+**Gradle**
 [subs="verbatim,attributes"]
 ----
 dependencies {
-    annotationProcessor '{project-group}:{project-name}-processor:{project-version}'
-    compileOnly '{project-group}:jipsy-annotations:{project-version}'
+    annotationProcessor '{project-groupId}:{project-name}-processor:{project-version}'
+    compileOnly '{project-groupId}:jipsy-annotations:{project-version}'
 }
 ----
 
