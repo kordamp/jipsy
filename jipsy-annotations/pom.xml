@@ -28,6 +28,7 @@
     </parent>
 
     <artifactId>jipsy-annotations</artifactId>
+    <name>jipsy-annotations</name>
 
     <build>
         <plugins>

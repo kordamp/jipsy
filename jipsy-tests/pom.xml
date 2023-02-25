@@ -28,6 +28,7 @@
     </parent>
 
     <artifactId>jipsy-tests</artifactId>
+    <name>jipsy-tests</name>
 
     <dependencies>
         <dependency>

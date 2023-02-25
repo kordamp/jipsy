@@ -44,7 +44,7 @@
         <version.moditect.plugin>1.0.0.RC2</version.moditect.plugin>
     </properties>
 
-    <name>${project.artifactId}</name>
+    <name>jipsy-parent</name>
     <description>Configurable Java Annotation Processor to simplify the use of
         the Service Provider Interface</description>
     <url>http://github.com/kordamp/jipsy</url>

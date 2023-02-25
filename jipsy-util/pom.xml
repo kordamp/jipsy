@@ -28,6 +28,7 @@
     </parent>
 
     <artifactId>jipsy-util</artifactId>
+    <name>jipsy-util</name>
 
     <dependencies>
         <dependency>

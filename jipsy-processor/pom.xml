@@ -28,6 +28,7 @@
     </parent>
 
     <artifactId>jipsy-processor</artifactId>
+    <name>jipsy-processor</name>
 
     <dependencies>
         <dependency>
