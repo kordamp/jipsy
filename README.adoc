@@ -5,7 +5,7 @@
 :project-name:       jipsy
 :project-groupId:    org.kordamp.jipsy
 :project-artifactId: jipsy-processor
-:project-version: 1.1.1
+:project-version: 1.2.0
 
 ifdef::env-github[]
 :tip-caption: :bulb:
