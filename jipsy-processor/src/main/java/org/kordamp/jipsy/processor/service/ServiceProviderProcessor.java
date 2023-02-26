@@ -153,6 +153,14 @@ public class ServiceProviderProcessor extends AbstractSpiProcessor {
         }
     }
 
+    /**
+     * Check that the type element {@code currentClass} meets all the requirements that are needed to be a provider.
+     * First of all it is a class, and it is public, not a non-static inner class, has public no-arg constructor and it
+     * is not abstract.
+     *
+     * @param currentClass the class to check
+     * @return the result, which is {@linkplain CheckResult#OK} if there is no problem.
+     */
     private CheckResult checkCurrentClass(TypeElement currentClass) {
         if (currentClass.getKind() != ElementKind.CLASS) {
             return CheckResult.valueOf("is not a class");

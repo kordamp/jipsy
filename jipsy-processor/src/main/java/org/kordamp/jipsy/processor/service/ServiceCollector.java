@@ -41,6 +41,13 @@ import org.kordamp.jipsy.processor.Logger;
 
 import java.util.*;
 
+/**
+ * Maintain a list of services. You can query the services by the name and in case service is not in the list it will
+ * be loaded from the {@code META-INF/services} directory files.
+ * <p>
+ * At any time the list of the services can be cached, which is a kind of snapshot and later you can query if there was
+ * any modification to the list of the service.
+ */
 public final class ServiceCollector {
     private final Map<String, Service> services = new LinkedHashMap<String, Service>();
     private final Map<String, Service> cached = new LinkedHashMap<String, Service>();
@@ -54,10 +61,17 @@ public final class ServiceCollector {
         this.logger = logger;
     }
 
+    /**
+     * Create a snapshot of the services into the cache.
+     */
     public void cache() {
         this.cached.putAll(services);
     }
 
+    /**
+     *
+     * @return {@code true} if there was a modification since the service was cached/snapshot made.
+     */
     public boolean isModified() {
         if (cached.size() != services.size()) {
             return true;

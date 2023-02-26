@@ -78,6 +78,13 @@ public abstract class AbstractPersistence implements Persistence {
         return fileList;
     }
 
+    /**
+     * Convert the array of files into a collection of the the file names.
+     *
+     * @param list the files to convert
+     * @return a collection containing the file names. Possibly an empty collection of the array langth is zero or the
+     * array parameter {@code list} is {@code null}.
+     */
     @Override
     public Collection<String> listDiscoveredFiles(File[] list) {
         if (list == null) {
